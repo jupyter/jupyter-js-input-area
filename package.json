@@ -1,19 +1,19 @@
 {
   "name": "input-area",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Jupyter Input Area",
   "main": "lib/index.js",
   "scripts": {
-      "prebuild": "mkdirp lib && mkdirp dist && npm run clean",
-      "test": "mocha --compilers js:babel/register",
-      "build": "npm run build:es5 && npm run build:browser",
-      "build:es5": "babel src --out-dir lib/ --source-maps",
-      "build:browser": "browserify lib/*.js --outfile dist/input-area.js",
-      "prepublish": "npm run build",
-      "watch": "parallelshell 'npm run watch:test -s' 'npm run watch:build -s'",
-      "watch:build": "nodemon -q -w src/ --ext '.' --exec 'npm run build'",
-      "watch:test": "npm run test -- -w",
-      "clean": "rimraf lib/* dist/*"
+    "prebuild": "mkdirp lib && mkdirp dist && npm run clean",
+    "test": "mocha --compilers js:babel/register",
+    "build": "npm run build:es5 && npm run build:browser",
+    "build:es5": "babel src --out-dir lib/ --source-maps",
+    "build:browser": "browserify lib/*.js --outfile dist/input-area.js",
+    "prepublish": "npm run build",
+    "watch": "parallelshell 'npm run watch:test -s' 'npm run watch:build -s'",
+    "watch:build": "nodemon -q -w src/ --ext '.' --exec 'npm run build'",
+    "watch:test": "npm run test -- -w",
+    "clean": "rimraf lib/* dist/*"
   },
   "repository": {
     "type": "git",
