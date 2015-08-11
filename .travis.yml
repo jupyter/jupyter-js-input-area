@@ -1,0 +1,8 @@
+language: node_js
+node_js:
+  - "iojs"
+sudo: false
+install:
+  - npm install
+  - npm run build
+
