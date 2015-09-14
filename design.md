@@ -24,7 +24,7 @@ The models should be abstract enough that someone can implement an alternative e
     - col
 
 ### Events
-model value change
-text change (diff)
-cursor added
-cursor removed
+model value change  
+text change (diff)  
+cursor added  
+cursor removed  
