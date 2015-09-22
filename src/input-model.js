@@ -1,4 +1,4 @@
-import {Model} from '/model';
+import {Model} from './model';
 
 class InputModel extends Model {
     constructor(id) {
