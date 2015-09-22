@@ -1,6 +1,6 @@
 import {assert, expect} from 'chai';
 
-import {Model} from '../src/model';
+import {Model, SERIALIZATION_ID} from '../src/model';
 
 describe('Model base class', function() {
     beforeEach(function() {
@@ -15,19 +15,19 @@ describe('Model base class', function() {
         
         it('registerModelType should create registeredModelTypes', function() {
             assert.notOk(Model.registeredModelTypes);
-            Model.registerModelType({constructor: {name: 'a'}});
+            Model.registerModelType({name: 'a'});
             assert.ok(Model.registeredModelTypes);
             assert.notEqual(Object.keys(Model.registeredModelTypes).length, 0);
         });
         
         it('registerModelType twice same should throw', function() {
-            Model.registerModelType({constructor: {name: 'a'}});
-            expect(() => { Model.registerModelType({constructor: {name: 'a'}}); }).to.throw(Error);
+            Model.registerModelType({name: 'a'});
+            expect(() => { Model.registerModelType({name: 'a'}); }).to.throw(Error);
         });
         
         it('registerModelType twice different should not throw', function() {
-            Model.registerModelType({constructor: {name: 'a'}});
-            expect(() => { Model.registerModelType({constructor: {name: 'b'}}); }).to.not.throw(Error);
+            Model.registerModelType({name: 'a'});
+            expect(() => { Model.registerModelType({name: 'b'}); }).to.not.throw(Error);
             assert.equal(Object.keys(Model.registeredModelTypes).length, 2);
         });
     });
@@ -143,6 +143,68 @@ describe('Model base class', function() {
                 assert.fail('event fired', 'event not fired');
             }, this);
             submodel.b = 'c';
+        });
+        
+        it('nested state json', function() {
+            let submodel = new Model();
+            submodel.declare('c');
+            submodel.c = 'c';
+            
+            this.model.declare('a');
+            this.model.a = submodel;
+            this.model.declare('b');
+            this.model.b = 1;
+            
+            let state = JSON.parse(this.model.state);
+            assert.equal(state.a, submodel.toJSON());
+            assert.equal(state.b, 1);
+        });
+        
+        it('recursive state json', function() {
+            this.model.declare('a');
+            this.model.a = this.model;
+            
+            let state = JSON.parse(this.model.state);
+            assert.equal(state.a, this.model.toJSON());
+        });
+        
+        it('set state json', function() {
+            let submodel = new Model();
+            this.model.declare('a');
+            this.model.a = submodel;
+            this.model.declare('b');
+            this.model.b = 1;
+            
+            let state = JSON.parse(this.model.state);
+            state.b = state.a;
+            state.a = 2;
+            this.model.state = JSON.stringify(state);
+            
+            assert.equal(this.model.b, submodel);
+            assert.equal(this.model.a, 2);
+        });
+        
+        it('set state json with unknown model', function() {
+            Model.registerModelType(Model);
+            
+            this.model.declare('a');
+            let state = JSON.parse(this.model.state);
+            state.a = SERIALIZATION_ID + 'Model,custom';
+            this.model.state = JSON.stringify(state);
+            
+            assert.ok(this.model.a);
+            assert.ok(this.model.a.id);
+            assert.equal(this.model.a.id, 'custom');
+        });
+        
+        it('preventChanged surpressed change signals', function() {
+            this.model.declare('test');
+            this.model.changed.connect((sender, data) => {
+                assert.fail('signal emitted', 'signal not emitted');
+            }, this);
+            this.model.preventChanged(() => {                
+                this.model.test = 'a';
+            });
         });
     });
 });

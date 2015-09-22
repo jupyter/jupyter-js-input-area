@@ -2,7 +2,7 @@ import {v4} from 'node-uuid';
 import {Signal} from 'phosphor-signaling';
 import * as _ from 'underscore';
 
-var SERIALIZATION_ID = 'model#';
+export var SERIALIZATION_ID = 'model#';
 
 var changed = new Signal();
 
@@ -21,8 +21,8 @@ export class Model {
             Model.registeredModelTypes = {};
         }
 
-        let name = modelClass.constructor.name;
-        if (!Model.registeredModelTypes[name]) {            
+        let name = modelClass.name;
+        if (!Model.registeredModelTypes[name]) {
             Model.registeredModelTypes[name] = modelClass;
         } else {
             throw new Error('A class with the name "' + name + '" has already been registered.');
@@ -82,6 +82,15 @@ export class Model {
         
         if (this._keys.indexOf(key) === -1) {
             this._keys.push(key);
+            
+            this._changeHandlers[key] = function handleChange(sender, data) {
+                if (this._changedLock <= 0) {                        
+                    this.changed.emit({
+                        key: key + '.' + data.key, 
+                        value: data.value
+                    });
+                }
+            }
         }
         
         Object.defineProperty(this, key, {
@@ -97,36 +106,17 @@ export class Model {
                     
                     // Unlisten to old's signals. Duck typing.
                     if (old && old.changed) {
-                        old.changed.disconnect(this._handleSubChanged, this);
+                        old.changed.disconnect(this._changeHandlers[key], this);
                     }
                     
                     // Recursively listen to change signals.  Duck typing.
                     if (x && x.changed) {
-                        x.changed.connect(this._handleSubChanged, this);
+                        x.changed.connect(this._changeHandlers[key], this);
                     }
                 }
             }
         });
-    }
-    
-    /**
-     * Get/make a change handler for the value of a key.
-     * @param  {string} key
-     * @return {function}
-     */
-    _getChangeHandler(key) {
-        if (!this._changeHandlers[key]) {
-            this._changeHandlers[key] = function handleChange(sender, data) {
-                if (this._changedLock <= 0) {                        
-                    this.changed.emit({
-                        key: key + '.' + data.key, 
-                        value: data.value
-                    });
-                }
-            }
-        }
-        return this._changeHandlers[key];
-    }    
+    } 
     
     /**
      * Declare a placeholder for a state key.
@@ -147,7 +137,7 @@ export class Model {
     get keys() {
         return this._keys.slice();
     }
-    
+            
     /**
      * Model state - jsonable
      * @return {object}
@@ -181,7 +171,7 @@ export class Model {
      * @param  {object} state
      */
     set stateObject(state) {
-        for (let key of state) {
+        for (let key of Object.keys(state)) {
             this[key] = state[key];
         }
     }
@@ -216,10 +206,11 @@ export class Model {
             let serialized = v.substring(SERIALIZATION_ID.length).split(',', 2);
             let className = serialized[0];
             let id = serialized[1];
-            if (Model.instanceMap.has(id)) {
-                return Model.instanceMap.get(id);
+            if (Model.instanceMap[id]) {
+                return Model.instanceMap[id];
             } else {
-                return new (Model.registeredModelTypes[className])(id);
+                let classType = Model.registeredModelTypes[className];
+                return new classType(id);
             }
         } else {
             return v;
