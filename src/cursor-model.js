@@ -1,6 +1,6 @@
 import {Model} from '/model';
 
-export class Coordinate extends Model {
+export class CoordinateModel extends Model {
     constructor(id) {
         super(id);
         this.placeholder('x');

@@ -8,7 +8,7 @@
     "test": "mocha --compilers js:babel/register",
     "build": "npm run build:es5 && npm run build:browser",
     "build:es5": "babel src --out-dir lib/ --source-maps",
-    "build:browser": "browserify lib/*.js --outfile dist/input-area.js",
+    "build:browser": "browserify lib/index.js --outfile dist/input-area.js",
     "prepublish": "npm run build",
     "watch": "parallelshell 'npm run watch:test -s' 'npm run watch:build -s'",
     "watch:build": "nodemon -q -w src/ --ext '.' --exec 'npm run build'",

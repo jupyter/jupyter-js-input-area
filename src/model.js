@@ -4,7 +4,7 @@ import * as _ from 'underscore';
 
 var SERIALIZATION_ID = 'model#';
 
-var changed = Signal();
+var changed = new Signal();
 
 /**
  * Base model
@@ -44,6 +44,7 @@ export class Model {
         
         this._changedLock = 0;
         this._keys = [];
+        this._changeHandlers = [];
     }
     
     /**
@@ -69,35 +70,63 @@ export class Model {
      * @param  {(object)=>void} setter
      */
     declare(key, getter, setter) {
-        if (getter === undefined) throw new Error('getter not defined');
-        if (setter === undefined) throw new Error('setter not defined');
+        if (getter === undefined && setter === undefined) {
+            let closedValue = undefined;
+            getter = () => closedValue;
+            setter = x => { closedValue = x; };
+        } else if (getter === undefined) {
+            throw new Error('getter not defined');
+        } else if (setter === undefined) {
+            throw new Error('setter not defined');
+        }
         
         if (this._keys.indexOf(key) === -1) {
             this._keys.push(key);
         }
         
         Object.defineProperty(this, key, {
+            configurable: true,
             get: getter,
             set: (x) => {
-                let changed = x !== this[key];
+                let old = this[key];
                 setter.call(this, x);
-                if (changed) {
-                    if (changedLock <= 0) {                        
-                        this.changed.emit(key, v, this);
+                if (x !== old) {
+                    if (this._changedLock <= 0) {                        
+                        this.changed.emit({key: key, value: x});
+                    }
+                    
+                    // Unlisten to old's signals. Duck typing.
+                    if (old && old.changed) {
+                        old.changed.disconnect(this._handleSubChanged, this);
                     }
                     
                     // Recursively listen to change signals.  Duck typing.
-                    if (x.changed) {
-                        x.changed.connect((k, v, sender) => {
-                            if (changedLock <= 0) {                        
-                                this.changed.emit(key + '.' + k, v, this);
-                            }
-                        }, this);
+                    if (x && x.changed) {
+                        x.changed.connect(this._handleSubChanged, this);
                     }
                 }
             }
         });
     }
+    
+    /**
+     * Get/make a change handler for the value of a key.
+     * @param  {string} key
+     * @return {function}
+     */
+    _getChangeHandler(key) {
+        if (!this._changeHandlers[key]) {
+            this._changeHandlers[key] = function handleChange(sender, data) {
+                if (this._changedLock <= 0) {                        
+                    this.changed.emit({
+                        key: key + '.' + data.key, 
+                        value: data.value
+                    });
+                }
+            }
+        }
+        return this._changeHandlers[key];
+    }    
     
     /**
      * Declare a placeholder for a state key.
