@@ -18,11 +18,11 @@ export class Model {
      */
     static registerModelType(modelClass) {
         if (!Model.registeredModelTypes) {
-            Model.registeredModelTypes = [];
+            Model.registeredModelTypes = {};
         }
 
         let name = modelClass.constructor.name;
-        if (Model.registeredModelTypes.indexOf(name) === -1) {            
+        if (!Model.registeredModelTypes[name]) {            
             Model.registeredModelTypes[name] = modelClass;
         } else {
             throw new Error('A class with the name "' + name + '" has already been registered.');
@@ -34,12 +34,13 @@ export class Model {
      * @param  {[string]} id - uuid
      */
     constructor(id) {
-        if (!Model.weakMap) {
-            Model.weakMap = new WeakMap();
+        if (!Model.instanceMap) {
+            Model.instanceMap = {};
         }
         
         this.id = id || this._newId();
-        Model.weakMap.set(this.id, this);
+        // TODO: weakref
+        Model.instanceMap[this.id] = this;
         
         this._changedLock = 0;
         this._keys = [];
@@ -186,8 +187,8 @@ export class Model {
             let serialized = v.substring(SERIALIZATION_ID.length).split(',', 2);
             let className = serialized[0];
             let id = serialized[1];
-            if (Model.weakMap.has(id)) {
-                return Model.weakMap.get(id);
+            if (Model.instanceMap.has(id)) {
+                return Model.instanceMap.get(id);
             } else {
                 return new (Model.registeredModelTypes[className])(id);
             }

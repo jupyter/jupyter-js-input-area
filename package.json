@@ -44,6 +44,7 @@
   "dependencies": {
     "guid": "0.0.12",
     "node-uuid": "^1.4.3",
-    "phosphor-signaling": "^1.1.1"
+    "phosphor-signaling": "^1.1.1",
+    "underscore": "^1.8.3"
   }
 }
