@@ -84,12 +84,7 @@ export class Model {
             this._keys.push(key);
             
             this._changeHandlers[key] = function handleChange(sender, data) {
-                if (this._changedLock <= 0) {                        
-                    this.changed.emit({
-                        key: key + '.' + data.key, 
-                        value: data.value
-                    });
-                }
+                this.emitChange(key + '.' + data.key, data.value);
             }
         }
         
@@ -100,9 +95,7 @@ export class Model {
                 let old = this[key];
                 setter.call(this, x);
                 if (x !== old) {
-                    if (this._changedLock <= 0) {                        
-                        this.changed.emit({key: key, value: x});
-                    }
+                    this.emitChange(key, x);
                     
                     // Unlisten to old's signals. Duck typing.
                     if (old && old.changed) {
@@ -127,6 +120,17 @@ export class Model {
         let barf = () => { throw new Error(key + ' not implemented'); };
         if (this._keys.indexOf(key) === -1) {
             this.declare(key, barf, barf);
+        }
+    }
+    
+    /**
+     * Emit a change signal for a key
+     * @param  {string} key
+     * @param  {any} value new value of the key
+     */
+    emitChange(key, value) {
+        if (this._changedLock <= 0) { 
+            this.changed.emit({key: key, value: value});
         }
     }
     
