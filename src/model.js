@@ -1,5 +1,5 @@
 import {v4} from 'node-uuid';
-import {Signal} from 'phosphor-signaling';
+import {Signal, clearSignalData} from 'phosphor-signaling';
 import * as _ from 'underscore';
 
 export var SERIALIZATION_ID = 'model#';
@@ -39,7 +39,7 @@ export class Model {
         }
         
         this.id = id || this._newId();
-        // TODO: weakref
+        // TODO: replace with weakref
         Model.instanceMap[this.id] = this;
         
         this._changedLock = 0;
@@ -219,6 +219,16 @@ export class Model {
         } else {
             return v;
         }
+    }
+    
+    /**
+     * Releases remaining handles on this model.
+     */
+    dispose() {
+        // Remove from instance mapping
+        delete Model.instanceMap[this.id];
+        // Release event related things
+        clearSignalData(this);
     }
 
     /**

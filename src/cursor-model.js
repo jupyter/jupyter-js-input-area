@@ -9,16 +9,10 @@ export class CoordinateModel extends Model {
 }
 
 export class CursorModel extends Model {
-    constructor(id, parent, creatorId) {
+    constructor(id) {
         super(id);
-        this.placeholder('primaryPos');
-        this.placeholder('secondaryPos');
-        
-        this.parent = parent;
-        this.creatorId = creatorId || parent.id;
-    }
-    
-    get local() {
-        return this.parent && this.parent.id === this.creatorId;
+        this.placeholder('owner');
+        this.placeholder('headPos');
+        this.placeholder('anchorPos');
     }
 }

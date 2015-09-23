@@ -10,6 +10,7 @@ class InputModel extends Model {
         this.placeholder('text');
         this.placeholder('language');
         this.placeholder('cursors');
+        this.placeholder('readonlyCursors');
     }
     
     get textInserted() {
