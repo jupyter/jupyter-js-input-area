@@ -75,9 +75,9 @@ export class Model {
             getter = () => closedValue;
             setter = x => { closedValue = x; };
         } else if (getter === undefined) {
-            throw new Error('getter not defined');
+            throw new Error('getter not defined for ' + key);
         } else if (setter === undefined) {
-            throw new Error('setter not defined');
+            throw new Error('setter not defined for ' + key);
         }
         
         if (this._keys.indexOf(key) === -1) {
@@ -131,11 +131,13 @@ export class Model {
      * Context handler that watches a set of keys for value changes.  At the end
      * of the context, for each value that has changed, a change signal will be 
      * emitted.
-     * @param  {string[]} keys
      * @param  {function} f
+     * @param  {[string[]]} keys
      * @return {string[]} list of keys that changed
      */
-    watch(keys, f) {
+    watch(f, keys) {
+        keys = keys || this.keys;
+        
         let oldValues = {};
         keys.forEach(key => {
             oldValues[key] = this[key];
@@ -283,7 +285,7 @@ export class Model {
             models = x.map(y => this._getModels(y));
         } else if (x instanceof Model) {
             models = [x];
-        } else if (x instanceof object) {
+        } else if (x instanceof Object) {
             models = Object.keys(x).map(y => this._getModels(x[y]));
         } else {
             models = [];

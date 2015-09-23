@@ -2,7 +2,7 @@ import {assert, expect} from 'chai';
 
 import {Model, SERIALIZATION_ID} from '../src/model';
 
-describe('Model base class', function() {
+describe('Model base', function() {
     beforeEach(function() {
         if (Model.registeredModelTypes) delete Model.registeredModelTypes;
         this.model = new Model();
@@ -207,7 +207,56 @@ describe('Model base class', function() {
             });
         });
         
-        // TODO: test .watch
-        // TODO: test ._getModels
+        it('watch monitors for value changes', function() {
+            let valueA = 0;
+            this.model.declare('a', () => valueA, x => {});
+            let valueB = 0;
+            this.model.declare('b', () => valueB, x => {});
+            
+            let triggered = false;
+            this.model.changed.connect((sender, data) => {
+                triggered = true;
+            }, this);
+            
+            this.model.watch(() => {                
+                valueA = 1;
+            });
+            assert.ok(triggered, 'all watched (1)');
+            
+            triggered = false;
+            this.model.watch(() => {                
+                valueB = 1;
+            });
+            assert.ok(triggered, 'all watched (2)');
+            
+            triggered = false;
+            this.model.watch(() => {                
+                valueB = 2;
+            }, ['a']);
+            assert.notOk(triggered, 'a watched');
+            
+            triggered = false;
+            this.model.watch(() => {                
+                valueB = 3;
+            }, ['b']);
+            assert.ok(triggered, 'b watched');
+        });
+        
+        it('getModels gets all of the nested Models in an object', function() {
+            let a = new Model();
+            let b = new Model();
+            let c = new Model();
+            
+            function arraysEqual(x, y) {
+                assert.equal(JSON.stringify(x), JSON.stringify(y));
+            }
+            arraysEqual([a,b], a._getModels([1, a, 2, 'test', b, 3]));
+            arraysEqual([a,b], a._getModels([1, a, a, b, 3]));
+            arraysEqual([a,c], a._getModels({first: a, second: 2, third: [3, c]}));
+            arraysEqual([a], a._getModels(a));
+            arraysEqual([], a._getModels([1, 2, 3]));
+            arraysEqual([], a._getModels(1));
+            arraysEqual([], a._getModels());
+        });
     });
 });

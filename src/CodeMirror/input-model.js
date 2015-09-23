@@ -21,7 +21,7 @@ export class CodeMirrorInputModel extends InputModel {
         
         this.cm = cm;
         
-        this.declare('text', this.cm.getvalue, this.cm.setValue);
+        this.declare('text', this.cm.getValue, this.cm.setValue);
         this.declare('language', () => this.cm.getOption('mode'), x => this.cm.setOption('mode', x));
         this.declare('cursors', this.getCursors, this.setCursors);
         

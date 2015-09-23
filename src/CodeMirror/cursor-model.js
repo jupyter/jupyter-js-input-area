@@ -1,4 +1,4 @@
-import {Pos} from 'CodeMirror';
+import {Pos} from 'codemirror';
 
 import {Model} from '../model';
 import {CursorModel, CoordinateModel} from '../cursor-model';
@@ -23,7 +23,7 @@ export class CodeMirrorCoordinateModel extends CursorModel {
     }
     
     set cmPos(value) {
-        this.watch(this.keys, () => {
+        this.watch(() => {
             this._cmPos = value;            
         });
     }
@@ -72,7 +72,7 @@ export class CodeMirrorCursorModel extends CursorModel {
     
     set cmRange(value) {
         if (value) {
-            this.watch(this.keys, () => {
+            this.watch(() => {
                 this.anchorPos.cmPos = value.anchor;
                 this.headPos.cmPos = value.head;
                 this._cmRange = value;

@@ -4,7 +4,7 @@ import {Signal} from 'phosphor-signaling';
 var textInserted = new Signal();
 var textRemoved = new Signal();
 
-class InputModel extends Model {
+export class InputModel extends Model {
     constructor(id) {
         super(id);    
         this.placeholder('text');
