@@ -1,3 +1,5 @@
+import * as diff from 'fast-diff';
+
 import {Model} from '../model';
 import {InputModel} from '../input-model';
 
@@ -121,7 +123,27 @@ export class CodeMirrorInputModel extends InputModel {
      */
     _handleChanges() {
         if (this._oldText) {
+            let segments = diff(this._oldText, this.text);
+            this._oldText = undefined;
             
+            let left = 0;
+            for (let i = 0; i < segments.length; i++) {
+                let text = segments[i][1];
+                switch (segments[i][0]) {
+                    case diff.INSERT:
+                        this.textInserted.emit({index: left, text: text});
+                        left += text.length;
+                        break;
+                        
+                    case diff.EQUAL:
+                        left += text.length;
+                        break;
+                        
+                    case diff.DELETE:
+                        this.textRemoved.emit({index: left, length: text.length});
+                        break;
+                }
+            }
         }
     }
 }
