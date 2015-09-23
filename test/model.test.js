@@ -206,5 +206,8 @@ describe('Model base class', function() {
                 this.model.test = 'a';
             });
         });
+        
+        // TODO: test .watch
+        // TODO: test ._getModels
     });
 });

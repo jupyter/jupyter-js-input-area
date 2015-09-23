@@ -13,10 +13,18 @@ class InputModel extends Model {
         this.placeholder('readonlyCursors');
     }
     
+    /**
+     * Signal fired when text is inserted
+     * data = {index: number, text: string}
+     */
     get textInserted() {
         return textInserted.bind(this);
     }
     
+    /**
+     * Signal fired when text is removed
+     * data = {index: number, legnth: number}
+     */
     get textRemoved() {
         return textRemoved.bind(this);
     }

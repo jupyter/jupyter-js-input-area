@@ -93,19 +93,23 @@ export class Model {
             get: getter,
             set: (x) => {
                 let old = this[key];
-                setter.call(this, x);
                 if (x !== old) {
+                    setter.call(this, x);
                     this.emitChange(key, x);
                     
                     // Unlisten to old's signals. Duck typing.
-                    if (old && old.changed) {
-                        old.changed.disconnect(this._changeHandlers[key], this);
-                    }
+                    this._getModels(old).forEach((x) => {
+                        if (x && x.changed) {
+                            x.changed.disconnect(this._changeHandlers[key], this);
+                        }
+                    });
                     
                     // Recursively listen to change signals.  Duck typing.
-                    if (x && x.changed) {
-                        x.changed.connect(this._changeHandlers[key], this);
-                    }
+                    this._getModels(x).forEach(x => {
+                        if (x && x.changed) {
+                            x.changed.connect(this._changeHandlers[key], this);
+                        }
+                    });
                 }
             }
         });
@@ -120,6 +124,34 @@ export class Model {
         let barf = () => { throw new Error(key + ' not implemented'); };
         if (this._keys.indexOf(key) === -1) {
             this.declare(key, barf, barf);
+        }
+    }
+    
+    /**
+     * Context handler that watches a set of keys for value changes.  At the end
+     * of the context, for each value that has changed, a change signal will be 
+     * emitted.
+     * @param  {string[]} keys
+     * @param  {function} f
+     * @return {string[]} list of keys that changed
+     */
+    watch(keys, f) {
+        let oldValues = {};
+        keys.forEach(key => {
+            oldValues[key] = this[key];
+        });
+        
+        try {
+            f.call(this);
+        } finally {
+            return keys.map(key => {
+                if (oldValues[key] !== this[key]) {
+                    this.emitChange(key, this[key]);
+                    return key;
+                } else {
+                    return undefined;
+                }
+            }).filter(key => key !== undefined);
         }
     }
     
@@ -237,5 +269,25 @@ export class Model {
      */
     _newId() {
         return v4();
+    }
+    
+    /**
+     * Get all of the Models in an object or array.
+     * @param  {any} x object, or array.  If it's an instance of a Model, it 
+     *                 will be returned alone.
+     * @return {Model[]}
+     */
+    _getModels(x) {
+        let models;
+        if (_.isArray(x)) {
+            models = x.map(y => this._getModels(y));
+        } else if (x instanceof Model) {
+            models = [x];
+        } else if (x instanceof object) {
+            models = Object.keys(x).map(y => this._getModels(x[y]));
+        } else {
+            models = [];
+        }
+        return _.uniq(_.flatten(models));
     }
 }
