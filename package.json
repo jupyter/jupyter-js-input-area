@@ -13,7 +13,7 @@
     "prepublish": "npm run build",
     "watch": "parallelshell 'npm run watch:test -s' 'npm run watch:build -s'",
     "watch:build": "nodemon -q -w src/ --ext '.' --exec 'npm run build'",
-    "watch:test": "nodemon -q -w src/ --ext '.' --exec 'npm run test'",
+    "watch:test": "nodemon -q -w src/ -w test/ --ext '.' --exec 'npm run test'",
     "clean": "rimraf lib/* dist/*"
   },
   "repository": {
