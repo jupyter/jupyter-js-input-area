@@ -4,6 +4,7 @@ import * as navigator from 'navigator';
 import {assert, expect} from 'chai';
 
 import {testInputModel} from '../input-model.test';
+import {testIntegration} from './integration.test';
 
 // virtual DOM environment for CodeMirror
 describe('CodeMirror testing environment', function() {
@@ -47,15 +48,23 @@ describe('CodeMirror testing environment', function() {
                     });
                     assert.ok(cm, 'CodeMirror instance constructed');
                     
+                    // Make sure we can interact with the CodeMirror instance
+                    cm.setValue('abc');
+                    assert.equal(cm.getValue(), 'abc');
+                    cm.setValue('');
+                    
                     // We must defer the loading of the CodeMirrorInputModel until the 
                     // environment has been spoofed.
                     let CodeMirrorInputModel = require('../../src/CodeMirror/input-model').CodeMirrorInputModel;
-                    
                     success();
-                    testInputModel('CodeMirror', () => new CodeMirrorInputModel(undefined, cm));
+                    
+                    describe('CodeMirror', function() {
+                        let createModel = id => new CodeMirrorInputModel(id, cm);
+                        testInputModel('generic', createModel);
+                        testIntegration(createModel);
+                    });
                 }
             });
         });    
     });
 });
-

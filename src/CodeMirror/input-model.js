@@ -1,9 +1,9 @@
 import * as diff from 'fast-diff';
+import {Pos} from 'codemirror';
 
 import {Model} from '../model';
 import {InputModel} from '../input-model';
-
-import {CodeMirrorCursorModel} from './cursor-model';
+import {CursorModel, CoordinateModel} from '../cursor-model';
 
 /**
  * CodeMirror model
@@ -17,29 +17,37 @@ export class CodeMirrorInputModel extends InputModel {
      */
     constructor(id, cm) {
         super(id);
-        Model.registerModelType(CodeMirrorInputModel);
         
         this.cm = cm;
         
-        this.declare('text', this.cm.getValue, this.cm.setValue);
+        this.declare('text', this.cm.getValue.bind(this.cm), this.cm.setValue.bind(this.cm));
         this.declare('language', () => this.cm.getOption('mode'), x => this.cm.setOption('mode', x));
-        this.declare('cursors', this.getCursors, this.setCursors);
+        this.declare('cursors', this.getCursors.bind(this), this.setCursors.bind(this));
         
         // TODO: Implement readonly cursors
         this.declare('readonlyCursors');
         
         this._cursors = [];
-        
+        this._cursorsLock = false;
         this._bindEvents();
     }
     
     /**
-     * Bind to CodeMirror instance events.
+     * Bind events.
      */
     _bindEvents() {
-        this.cm.on('cursorActivity', this._linkCursors.bind(this));
+        // CodeMirror instance events
+        this.cm.on('cursorActivity', this._fetchCursors.bind(this));
         this.cm.on('beforeChange', this._handleBeforeChange.bind(this));
         this.cm.on('changes', this._handleChanges.bind(this));
+        
+        // Model events
+        // When the cursors are changed, update CodeMirror.
+        this.changed.connect((sender, data) => {
+            if (data.key.startsWith('cursors')) {
+                this._pushCursors();
+            }
+        }, this);
     }
 
     /**
@@ -47,8 +55,8 @@ export class CodeMirrorInputModel extends InputModel {
      * @return {CodeMirrorCursorModel[]}
      */
     getCursors() {
-        this._linkCursors();
-        return this._cursors.slice(0, this.cm.listSelections().length);
+        this._fetchCursors();
+        return this._cursors;
     }
     
     /**
@@ -56,57 +64,69 @@ export class CodeMirrorInputModel extends InputModel {
      * @param {CodeMirrorCursorModel[]} cursors
      */
     setCursors(cursors) {
-        let states = cursors.map(x => x.state);
-        this._cursors = cursors.splice(0);
-        this._linkCursors();
-        
-        for (let i = 0; i < this.cm.listSelections().length; i++) {
-            this._cursors[i].state = states[i];
-        }
-        
-        if (this.cm.listSelections().length < cursors.length) {
-            for (let i = this.cm.listSelections().length; i < cursors.length; i++) {
-                this.cm.addSelection(cursors[i].anchorPos, cursors[i].headPos);
-            }
-        }
-        this._linkCursors();
+        this._cursors = cursors;
     }
     
     /**
-     * Links the CodeMirrorCursorModels to CodeMirror Range classes.  Also
-     * connects to the change signals of the CodeMirrorCursorModels.
+     * Update local cursor state from CodeMirror cursor state.
      */
-    _linkCursors() {
-        let ranges = this.cm.listSelections();
-        for (let i = 0; i < ranges.length; i++) {
-            let cursor;
-            if (i >= this._cursors.length) {
-                cursor = new CodeMirrorCursorModel(undefined, ranges[i]);
+    _fetchCursors() {
+        this._lockCursors(() => {
+            let ranges = this.cm.listSelections();
+            
+            // Add cursors that are missing.
+            while (ranges.length > this._cursors.length) {
+                let cursor = new CursorModel();
+                cursor.headPos = new CoordinateModel();
+                cursor.anchorPos = new CoordinateModel();
                 this._cursors.push(cursor);
-            } else {
-                cursor = this._cursors[i];
-                cursor.cmRange = ranges[i];
             }
             
-            // Connect - this handles both when the signal is already 
-            // connected and when it hasn't been connected yet.  If it has
-            // already been connected, the connect call will return false.
-            cursor.change.connect(this._handleCursor, this);
-        }
+            // Remove cursors that no longer exist.
+            if (ranges.length < this._cursors.length) {
+                this._cursors.splice(ranges.length, this._cursors.length - ranges.length);
+            }
+            
+            // Update all cursor coordinates.
+            ranges.forEach((range, index) => {
+                this._cursors[index].headPos.y = range.head.line;
+                this._cursors[index].headPos.x = range.head.ch;
+                this._cursors[index].anchorPos.y = range.anchor.line;
+                this._cursors[index].anchorPos.x = range.anchor.ch;
+            });
+        });
     }
     
     /**
-     * Handles when a CodeMirrorCursorModel changes
-     * @param  {CodeMirrorCursorModel} sender
-     * @param  {object} data
-     * @param  {string} data.key key that has changed
-     * @param  {any} data.value new value
+     * Push local cursor state to CodeMirror cursor state.
      */
-    _handleCursor(sender, data) {
-        // The CodeMirror API is limited, changing the Range objects or Pos 
-        // objects alone doesn't properly update the instance.  Instead, we have
-        // to reset everything using the setSelections API.
-        this.cm.setSelections(this._cursors.slice(0, this.cm.listSelections().length).map(x => x.cmRange));
+    _pushCursors() {
+        this._lockCursors(() => {
+            // The CodeMirror API is limited, changing the Range objects or Pos 
+            // objects alone doesn't properly update the instance.  Instead, we have
+            // to reset everything using the setSelections API.
+            this.cm.setSelections(this._cursors.map(x => {
+                return {
+                    head: cm.clipPos(new Pos(x.headPos.y, x.headPos.x)),
+                    anchor: cm.clipPos(new Pos(x.anchorPos.y, x.anchorPos.x))
+                };
+            }));
+        });
+    }
+    
+    /**
+     * Context manager that locks write access to the cursors list.
+     * @param  {function} f
+     */
+    _lockCursors(f) {
+        if (!this._cursorsLock) {
+            this._cursorsLock = true;
+            try {                
+                f.call(this);
+            } finally {
+                this._cursorsLock = false;
+            }
+        }
     }
     
     /**
@@ -122,8 +142,8 @@ export class CodeMirrorInputModel extends InputModel {
      * Handles after the text changes.
      */
     _handleChanges() {
-        if (this._oldText) {
-            let segments = diff(this._oldText, this.text);
+        if (this._oldText && this._oldText !== this.text) {
+            let segments = diff.default(this._oldText, this.text);
             this._oldText = undefined;
             
             let left = 0;
@@ -144,6 +164,10 @@ export class CodeMirrorInputModel extends InputModel {
                         break;
                 }
             }
+            
+            // Emit text change event after fine grained events are emitted.
+            this.emitChange('text', this.text);
         }
     }
 }
+Model.registerModelType(CodeMirrorInputModel);

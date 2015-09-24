@@ -12,7 +12,7 @@ export class CursorModel extends Model {
     constructor(id) {
         super(id);
         this.declare('owner');
-        this.placeholder('headPos');
-        this.placeholder('anchorPos');
+        this.declare('headPos');
+        this.declare('anchorPos');
     }
 }

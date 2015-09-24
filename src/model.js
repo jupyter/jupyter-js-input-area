@@ -90,11 +90,12 @@ export class Model {
         
         Object.defineProperty(this, key, {
             configurable: true,
+            enumerable: true,
             get: getter,
             set: (x) => {
                 let old = this[key];
                 if (x !== old) {
-                    setter.call(this, x);
+                    this.preventChanged(() => setter.call(this, x));
                     this.emitChange(key, x);
                     
                     // Unlisten to old's signals. Duck typing.

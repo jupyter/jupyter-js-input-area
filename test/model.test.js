@@ -85,6 +85,21 @@ describe('Model base', function() {
             assert.equal(this.model.test, 'b');
         });
         
+        it('placeholder followed by declare on a subclass defines a key', function() {
+            class A extends Model {
+                constructor() { super(); this.placeholder('test'); }
+            }
+            class B extends A {
+                constructor() { super(); this.declare('test', () => 'b', x => {}); }
+            }
+            let b = new B();
+            assert.equal(b.keys.length, 1);
+            assert.equal(b.keys[0], 'test');
+            expect(() => { b.test = 'a'; }).to.not.throw(Error);
+            expect(() => { var a = b.test; }).to.not.throw(Error);
+            assert.equal(b.test, 'b');
+        });
+        
         it('declare defines a key', function() {
             this.model.declare('test', () => 'b', x => {});
             assert.equal(this.model.keys.length, 1);
