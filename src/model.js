@@ -68,8 +68,12 @@ export class Model {
      * @param  {string} key
      * @param  {()=>object} getter
      * @param  {(object)=>void} setter
+     * @param  {[boolean]} peventSetterChanges an optional parameter that allows 
+     *                                         you to prevent change signals 
+     *                                         from being emitted while the 
+     *                                         setter callback is being executed.
      */
-    declare(key, getter, setter) {
+    declare(key, getter, setter, peventSetterChanges) {
         if (getter === undefined && setter === undefined) {
             let closedValue;
             getter = () => closedValue;
@@ -95,7 +99,12 @@ export class Model {
             set: function(x) {
                 let old = this[key];
                 if (x !== old) {
-                    setter.call(this, x);
+                    if (peventSetterChanges) {
+                        this.preventChanged(() => setter.call(this, x));
+                    } else {
+                        setter.call(this, x);
+                    }
+                    
                     this.emitChange(key, x);
                     
                     // Unlisten to old's signals.
@@ -218,7 +227,7 @@ export class Model {
     preventChanged(f) {
         this._changedLock += 1;
         try {
-            f.call(this);
+            return f.call(this);
         } finally {            
             this._changedLock -= 1;
         }

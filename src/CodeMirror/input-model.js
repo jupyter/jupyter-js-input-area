@@ -20,16 +20,16 @@ export class CodeMirrorInputModel extends InputModel {
         
         this.cm = cm;
         
-        this.declare('text', this.cm.getValue.bind(this.cm), this.cm.setValue.bind(this.cm));
-        this.declare('language', () => this.cm.getOption('mode'), x => this.cm.setOption('mode', x));
+        this.declare('text', this.cm.getValue.bind(this.cm), this.cm.setValue.bind(this.cm), true);
+        this.declare('language', () => this.cm.getOption('mode'), x => this.cm.setOption('mode', x), true);
         this.declare('cursors', this.getCursors.bind(this), this.setCursors.bind(this));
         
         // TODO: Implement readonly cursors
         this.declare('readonlyCursors');
         
-        this._cursors = [];
         this._cursorsLock = false;
         this._bindEvents();
+        this.cursors = [];
     }
     
     /**
@@ -75,25 +75,27 @@ export class CodeMirrorInputModel extends InputModel {
             let ranges = this.cm.listSelections();
             
             // Add cursors that are missing.
-            while (ranges.length > this._cursors.length) {
+            let cursors = (this._cursors || []).splice();
+            while (ranges.length > cursors.length) {
                 let cursor = new CursorModel();
                 cursor.headPos = new CoordinateModel();
                 cursor.anchorPos = new CoordinateModel();
-                this._cursors.push(cursor);
+                cursors.push(cursor);
             }
             
             // Remove cursors that no longer exist.
-            if (ranges.length < this._cursors.length) {
-                this._cursors.splice(ranges.length, this._cursors.length - ranges.length);
+            if (ranges.length < cursors.length) {
+                cursors.splice(ranges.length, cursors.length - ranges.length);
             }
             
             // Update all cursor coordinates.
             ranges.forEach((range, index) => {
-                this._cursors[index].headPos.y = range.head.line;
-                this._cursors[index].headPos.x = range.head.ch;
-                this._cursors[index].anchorPos.y = range.anchor.line;
-                this._cursors[index].anchorPos.x = range.anchor.ch;
+                cursors[index].headPos.y = range.head.line;
+                cursors[index].headPos.x = range.head.ch;
+                cursors[index].anchorPos.y = range.anchor.line;
+                cursors[index].anchorPos.x = range.anchor.ch;
             });
+            this.cursors = cursors;
         });
     }
     
@@ -122,7 +124,7 @@ export class CodeMirrorInputModel extends InputModel {
         if (!this._cursorsLock) {
             this._cursorsLock = true;
             try {                
-                f.call(this);
+                return f.call(this);
             } finally {
                 this._cursorsLock = false;
             }
