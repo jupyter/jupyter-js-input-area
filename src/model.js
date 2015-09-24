@@ -71,7 +71,7 @@ export class Model {
      */
     declare(key, getter, setter) {
         if (getter === undefined && setter === undefined) {
-            let closedValue = undefined;
+            let closedValue;
             getter = () => closedValue;
             setter = x => { closedValue = x; };
         } else if (getter === undefined) {
@@ -85,31 +85,27 @@ export class Model {
             
             this._changeHandlers[key] = function handleChange(sender, data) {
                 this.emitChange(key + '.' + data.key, data.value);
-            }
+            };
         }
         
         Object.defineProperty(this, key, {
             configurable: true,
             enumerable: true,
             get: getter,
-            set: (x) => {
+            set: function(x) {
                 let old = this[key];
                 if (x !== old) {
-                    this.preventChanged(() => setter.call(this, x));
+                    setter.call(this, x);
                     this.emitChange(key, x);
                     
-                    // Unlisten to old's signals. Duck typing.
+                    // Unlisten to old's signals.
                     this._getModels(old).forEach((x) => {
-                        if (x && x.changed) {
-                            x.changed.disconnect(this._changeHandlers[key], this);
-                        }
+                        x.changed.disconnect(this._changeHandlers[key], this);
                     });
                     
-                    // Recursively listen to change signals.  Duck typing.
+                    // Recursively listen to change signals.
                     this._getModels(x).forEach(x => {
-                        if (x && x.changed) {
-                            x.changed.connect(this._changeHandlers[key], this);
-                        }
+                        x.changed.connect(this._changeHandlers[key], this);
                     });
                 }
             }

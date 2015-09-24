@@ -1,5 +1,7 @@
 import {assert, expect} from 'chai';
 
+import {CursorModel, CoordinateModel} from '../../src/cursor-model';
+
 export function testIntegration(constructModel) {
     describe('integration', function() {
         beforeEach(function() {
@@ -76,6 +78,90 @@ export function testIntegration(constructModel) {
                 this.cm.setValue('c');
                 checkEvents([ { type: 'remove', data: { index: 0, length: 2 } },
                               { type: 'insert', data: { index: 0, text: 'c' } } ]);
+            });
+            
+            it('can create cursors', function() {
+                this.model.text = 'te\nst\nit';
+                let cursor = new CursorModel(undefined, new CoordinateModel(undefined, 1, 2), new CoordinateModel(undefined, 2, 1));
+                this.model.cursors = this.model.cursors.concat([cursor]);
+                
+                // Test
+                let ranges = this.cm.listSelections();
+                assert.equal(ranges.length, 2);
+                assert.equal(ranges[1].head.ch, 1);
+                assert.equal(ranges[1].head.line, 2);
+                assert.equal(ranges[1].anchor.ch, 2);
+                assert.equal(ranges[1].anchor.line, 1);
+            });
+            
+            it('can remove cursors', function() {
+                this.model.text = 'te\nst\nit';
+                let cursor = new CursorModel(undefined, new CoordinateModel(undefined, 1, 2), new CoordinateModel(undefined, 2, 1));
+                this.model.cursors = this.model.cursors.concat([cursor]);
+                
+                let ranges = this.cm.listSelections();
+                assert.equal(ranges.length, 2);
+                
+                // Remove a cursor
+                this.model.cursors = this.model.cursors.slice(0,1);
+                assert.equal(this.cm.listSelections().length, 1);
+            });
+            
+            it('can modify a cursor by a single coordinate', function() {
+                this.model.text = 'te\nst\nit';
+                debugger;
+                this.model.cursors[0].headPos = new CoordinateModel(undefined, 1, 2);
+                
+                // Test
+                let ranges = this.cm.listSelections();
+                assert.equal(ranges[0].head.ch, 1);
+                assert.equal(ranges[0].head.line, 2);
+            });
+            
+            it('can modify a cursor by a single dimension', function() {
+                this.model.text = 'te\nst\nit';
+                this.model.cursors[0].headPos.y = 2;
+                
+                // Test
+                let ranges = this.cm.listSelections();
+                assert.equal(ranges[0].head.line, 2);
+            });
+            
+            it('detects new cursors', function() {
+                this.model.text = 'te\nst\nit';
+                this.cm.setSelections([
+                    {head: {line: 0, ch: 0}, anchor: {line: 0, ch: 0}},
+                    {head: {line: 2, ch: 1}, anchor: {line: 1, ch: 2}},
+                ]);
+                
+                assert.equal(this.model.cursors[1].headPos.y, 2);
+                assert.equal(this.model.cursors[1].headPos.x, 1);
+                assert.equal(this.model.cursors[1].anchorPos.y, 1);
+                assert.equal(this.model.cursors[1].anchorPos.x, 2);
+            });
+            
+            it('detects cursor deletion', function() {
+                this.model.text = 'te\nst\nit';
+                let cursor = new CursorModel(undefined, new CoordinateModel(undefined, 1, 2), new CoordinateModel(undefined, 2, 1));
+                this.model.cursors = this.model.cursors.concat([cursor]);
+                
+                let ranges = this.cm.listSelections();
+                assert.equal(ranges.length, 2);
+                
+                this.cm.setSelections(ranges.slice(0,1));
+                assert.equal(this.cm.listSelections().length, 1);
+            });
+            
+            it('detects cursor movement', function() {
+                this.model.text = 'te\nst\nit';
+                this.cm.setSelections([
+                    {head: {line: 2, ch: 1}, anchor: {line: 1, ch: 2}},
+                ]);
+                
+                assert.equal(this.model.cursors[0].headPos.y, 2);
+                assert.equal(this.model.cursors[0].headPos.x, 1);
+                assert.equal(this.model.cursors[0].anchorPos.y, 1);
+                assert.equal(this.model.cursors[0].anchorPos.x, 2);
             });
         });
     });

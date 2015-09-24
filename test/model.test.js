@@ -146,6 +146,55 @@ describe('Model base', function() {
             submodel.b = 'c';
         });
         
+        it('double nested change signal emitted', function() {
+            let submodel = new Model();
+            submodel.declare('b');
+            
+            let intermediateModel = new Model();
+            intermediateModel.declare('a');
+            
+            this.model.declare('a');
+            this.model.a = intermediateModel;
+            intermediateModel.a = submodel;
+            
+            this.model.changed.connect((sender, data) => {
+                assert.equal(data.key, 'a.a.b');
+                assert.equal(data.value, 'c');
+                assert.equal(sender, this.model);
+            }, this);
+            submodel.b = 'c';
+        });
+        
+        it('nested in a list change signal emitted', function() {
+            let submodel = new Model();
+            submodel.declare('b');
+            
+            this.model.declare('a');
+            this.model.a = [1, submodel, 2];
+            
+            this.model.changed.connect((sender, data) => {
+                assert.equal(data.key, 'a.b');
+                assert.equal(data.value, 'c');
+                assert.equal(sender, this.model);
+            }, this);
+            submodel.b = 'c';
+        });
+        
+        it('nested in an object change signal emitted', function() {
+            let submodel = new Model();
+            submodel.declare('b');
+            
+            this.model.declare('a');
+            this.model.a = { test: submodel };
+            
+            this.model.changed.connect((sender, data) => {
+                assert.equal(data.key, 'a.b');
+                assert.equal(data.value, 'c');
+                assert.equal(sender, this.model);
+            }, this);
+            submodel.b = 'c';
+        });
+        
         it('old nested change signal not triggered', function() {
             let submodel = new Model();
             submodel.declare('b');

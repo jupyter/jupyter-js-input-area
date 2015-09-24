@@ -6,6 +6,7 @@
   "scripts": {
     "prebuild": "mkdirp lib && mkdirp dist && npm run clean",
     "test": "mocha --recursive --compilers js:babel/register",
+    "test:debug": "mocha --recursive --compilers js:babel/register --debug-brk",
     "build": "npm run build:es5 && npm run build:browser",
     "build:es5": "babel src --out-dir lib/ --source-maps",
     "build:browser": "browserify lib/index.js --outfile dist/input-area.js",

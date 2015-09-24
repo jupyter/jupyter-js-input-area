@@ -107,8 +107,8 @@ export class CodeMirrorInputModel extends InputModel {
             // to reset everything using the setSelections API.
             this.cm.setSelections(this._cursors.map(x => {
                 return {
-                    head: cm.clipPos(new Pos(x.headPos.y, x.headPos.x)),
-                    anchor: cm.clipPos(new Pos(x.anchorPos.y, x.anchorPos.x))
+                    head: this.cm.clipPos(new Pos(x.headPos.y, x.headPos.x)),
+                    anchor: this.cm.clipPos(new Pos(x.anchorPos.y, x.anchorPos.x))
                 };
             }));
         });
