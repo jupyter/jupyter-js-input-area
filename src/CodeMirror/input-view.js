@@ -2,13 +2,14 @@ import * as diff from 'fast-diff';
 import {Pos} from 'codemirror';
 
 import {Model} from '../model';
-import {InputModel} from '../input-model';
-import {CursorModel, CoordinateModel} from '../cursor-model';
+import {InputView} from '../input-view';
+import {CursorView} from '../cursor-view';
+import {CoordinateView} from '../coordinate-view';
 
 /**
  * CodeMirror model
  */
-export class CodeMirrorInputModel extends InputModel {
+export class CodeMirrorInputView extends InputView {
 
     /**
      * Public constructor
@@ -52,7 +53,7 @@ export class CodeMirrorInputModel extends InputModel {
 
     /**
      * Gets the cursors
-     * @return {CodeMirrorCursorModel[]}
+     * @return {CursorView[]}
      */
     getCursors() {
         this._fetchCursors();
@@ -61,7 +62,7 @@ export class CodeMirrorInputModel extends InputModel {
     
     /**
      * Sets the cursors
-     * @param {CodeMirrorCursorModel[]} cursors
+     * @param {CursorView[]} cursors
      */
     setCursors(cursors) {
         this._cursors = cursors;
@@ -77,9 +78,9 @@ export class CodeMirrorInputModel extends InputModel {
             // Add cursors that are missing.
             let cursors = (this._cursors || []).splice();
             while (ranges.length > cursors.length) {
-                let cursor = new CursorModel();
-                cursor.headPos = new CoordinateModel();
-                cursor.anchorPos = new CoordinateModel();
+                let cursor = new CursorView();
+                cursor.headPos = new CoordinateView();
+                cursor.anchorPos = new CoordinateView();
                 cursors.push(cursor);
             }
             
@@ -172,4 +173,4 @@ export class CodeMirrorInputModel extends InputModel {
         }
     }
 }
-Model.registerModelType(CodeMirrorInputModel);
+Model.registerModelType(CodeMirrorInputView);

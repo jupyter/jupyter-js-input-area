@@ -1,11 +1,12 @@
 import {assert, expect} from 'chai';
 
-import {CursorModel, CoordinateModel} from '../../src/cursor-model';
+import {CursorView} from '../../src/cursor-view';
+import {CoordinateView} from '../../src/coordinate-view';
 
-export function testIntegration(constructModel) {
+export function testIntegration(constructView) {
     describe('integration', function() {
         beforeEach(function() {
-            this.model = constructModel();
+            this.model = constructView();
             this.cm = this.model.cm;
             this.cm.setValue('');
             this.cm.setSelection({line: 0, ch: 0}, {line: 0, ch: 0});
@@ -82,7 +83,7 @@ export function testIntegration(constructModel) {
             
             it('can create cursors', function() {
                 this.model.text = 'te\nst\nit';
-                let cursor = new CursorModel(undefined, new CoordinateModel(undefined, 1, 2), new CoordinateModel(undefined, 2, 1));
+                let cursor = new CursorView(undefined, new CoordinateView(undefined, 1, 2), new CoordinateView(undefined, 2, 1));
                 this.model.cursors = this.model.cursors.concat([cursor]);
                 
                 // Test
@@ -96,7 +97,7 @@ export function testIntegration(constructModel) {
             
             it('can remove cursors', function() {
                 this.model.text = 'te\nst\nit';
-                let cursor = new CursorModel(undefined, new CoordinateModel(undefined, 1, 2), new CoordinateModel(undefined, 2, 1));
+                let cursor = new CursorView(undefined, new CoordinateView(undefined, 1, 2), new CoordinateView(undefined, 2, 1));
                 this.model.cursors = this.model.cursors.concat([cursor]);
                 
                 let ranges = this.cm.listSelections();
@@ -110,7 +111,7 @@ export function testIntegration(constructModel) {
             it('can modify a cursor by a single coordinate', function() {
                 this.model.text = 'te\nst\nit';
                 debugger;
-                this.model.cursors[0].headPos = new CoordinateModel(undefined, 1, 2);
+                this.model.cursors[0].headPos = new CoordinateView(undefined, 1, 2);
                 
                 // Test
                 let ranges = this.cm.listSelections();
@@ -142,7 +143,7 @@ export function testIntegration(constructModel) {
             
             it('detects cursor deletion', function() {
                 this.model.text = 'te\nst\nit';
-                let cursor = new CursorModel(undefined, new CoordinateModel(undefined, 1, 2), new CoordinateModel(undefined, 2, 1));
+                let cursor = new CursorView(undefined, new CoordinateView(undefined, 1, 2), new CoordinateView(undefined, 2, 1));
                 this.model.cursors = this.model.cursors.concat([cursor]);
                 
                 let ranges = this.cm.listSelections();

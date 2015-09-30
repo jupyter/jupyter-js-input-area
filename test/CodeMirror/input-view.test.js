@@ -3,7 +3,7 @@ import * as navigator from 'navigator';
 
 import {assert, expect} from 'chai';
 
-import {testInputModel} from '../input-model.test';
+import {testInputView} from '../input-view.test';
 import {testIntegration} from './integration.test';
 
 // virtual DOM environment for CodeMirror
@@ -53,14 +53,14 @@ describe('CodeMirror testing environment', function() {
                     assert.equal(cm.getValue(), 'abc');
                     cm.setValue('');
                     
-                    // We must defer the loading of the CodeMirrorInputModel until the 
+                    // We must defer the loading of the CodeMirrorInputView until the 
                     // environment has been spoofed.
-                    let CodeMirrorInputModel = require('../../src/CodeMirror/input-model').CodeMirrorInputModel;
+                    let CodeMirrorInputView = require('../../src/CodeMirror/input-view').CodeMirrorInputView;
                     success();
                     
                     describe('CodeMirror', function() {
-                        let createModel = id => new CodeMirrorInputModel(id, cm);
-                        testInputModel('generic', createModel);
+                        let createModel = id => new CodeMirrorInputView(id, cm);
+                        testInputView('generic', createModel);
                         testIntegration(createModel);
                     });
                 }

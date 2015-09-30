@@ -1,2 +1,2 @@
-import {CodeMirrorInputModel} from './input-model';
-export default {CodeMirrorInputModel};
+import {CodeMirrorInputView} from './input-view';
+export default {CodeMirrorInputView};
