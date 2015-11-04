@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Jupyter Input Area",
   "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "scripts": {
     "prebuild": "mkdirp lib && mkdirp dist && npm run clean",
     "test": "mocha --recursive --compilers js:babel/register",
