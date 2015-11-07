@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "ES5",
+    "sourceMap": true
+  },
+
+    "files": [
+    "../typings/codemirror/codemirror.d.ts",
+    "index.ts"
+  ]
+}

@@ -6,6 +6,7 @@
   "typings": "lib/index.d.ts",
   "dependencies": {
     "codemirror": "^5.7.0",
+    "diff-match-patch": "^1.0.0",
     "phosphor-messaging": "^1.0.5",
     "phosphor-properties": "^2.0.0",
     "phosphor-signaling": "^1.1.2",
@@ -23,9 +24,8 @@
     "clean:lib": "rimraf lib",
     "clean:example": "rimraf example/*.js example/*.map",
     "build:src": "tsc --project src",
-    "build:test": "tsc --project test/src",
     "build:example": "tsc --project example",
-    "build": "npm run build:src",
+    "build": "npm run build:src && npm run build:example",
     "docs": "rimraf docs/api && typedoc --options scripts/tdoptions.json",
     "postinstall": "npm dedupe",
     "watch": "npm run watch:build -s",
