@@ -162,18 +162,18 @@ class CodeMirrorWidget extends Widget {
    */
   private _modelUpdate(sender: ITextEditorViewModel, args: IChangedArgs<any>) {
     switch(args.name) {
-      case 'fixedHeight':
-        this.updateFixedHeight(args.newValue);
-        break;
-      case 'text':
-        this.updateText(args.newValue);
-        break;
-      case 'mimetype':
-        this.updateMimetype(args.newValue);
-        break;
-      case 'lineNumbers':
-        this.updateLineNumbers(args.newValue);
-        break;
+    case 'fixedHeight':
+      this.updateFixedHeight(args.newValue);
+      break;
+    case 'text':
+      this.updateText(args.newValue);
+      break;
+    case 'mimetype':
+      this.updateMimetype(args.newValue);
+      break;
+    case 'lineNumbers':
+      this.updateLineNumbers(args.newValue);
+      break;
     }
   }
 
