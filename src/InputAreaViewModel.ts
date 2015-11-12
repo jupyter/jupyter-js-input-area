@@ -143,6 +143,16 @@ class InputAreaViewModel implements IInputAreaViewModel {
   });
 
   /**
+  * A property descriptor containing the text editor viewmodel.
+  *
+  * **See also:** [[textEditor]]
+  */
+  static textEditorProperty = new Property<InputAreaViewModel, TextEditorViewModel>({
+    name: 'textEditor',
+    notify: InputAreaViewModel.stateChangedSignal,
+  });
+
+  /**
    * A signal emitted when the state of the model changes.
    *
    * #### Notes
@@ -232,7 +242,25 @@ class InputAreaViewModel implements IInputAreaViewModel {
     InputAreaViewModel.executionCountProperty.set(this, value);
   }
 
-    textEditor: ITextEditorViewModel;
+  /**
+   * Get the text editor viewmodel.
+   *
+   * #### Notes
+   * This is a pure delegate to the [[textEditorProperty]].
+   */
+  get textEditor() {
+    return InputAreaViewModel.textEditorProperty.get(this);
+  }
+  
+  /**
+   * Set the text editor viewmodel.
+   *
+   * #### Notes
+   * This is a pure delegate to the [[textEditorProperty]].
+   */
+  set textEditor(value: TextEditorViewModel) {
+    InputAreaViewModel.textEditorProperty.set(this, value);
+  }
 }
 
 
