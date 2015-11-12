@@ -60,7 +60,7 @@ class CodeMirrorWidget extends Widget {
   }
 
   /**
-   * Update the fixedHeight.
+   * Update whether the editor has a fixed maximum height.
    */
   updateFixedHeight(fixedHeight: boolean) {
     if (fixedHeight) {
