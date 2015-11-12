@@ -1,38 +1,15 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-
 'use strict';
+
+import {
+  IChangedArgs, Property
+} from 'phosphor-properties';
 
 import {
   ISignal, Signal
 } from 'phosphor-signaling';
 
-import {
-  Property
-} from 'phosphor-properties';
-
-
-/**
- * The arguments object emitted with the `stateChanged` signal.
- */
-export
-interface IChangedArgs<T> {
-
-  /**
-   * The name of the attribute being changed.
-   */
-  name: string,
-
-  /**
-   * The old value of the attribute.
-   */
-  oldValue: T;
-
-  /**
-   * The new value of the attribute.
-   */
-  newValue: T;
-}
 
 /**
  * The view model for an input area.
@@ -70,6 +47,7 @@ interface IInputAreaViewModel {
    */
   executionCount: number;
 }
+
 
 /**
  * The view model for a text editor.
@@ -109,6 +87,7 @@ interface ITextEditorViewModel {
    */
   fixedHeight: boolean;
 }
+
 
 /**
  * An implementation of an input area view model.
@@ -193,7 +172,6 @@ class InputAreaViewModel implements IInputAreaViewModel {
     InputAreaViewModel.renderedProperty.set(this, value);
   }
 
-
   /**
    * Get whether the input area should be collapsed or displayed.
    *
@@ -257,10 +235,12 @@ class InputAreaViewModel implements IInputAreaViewModel {
     textEditor: ITextEditorViewModel;
 }
 
+
 /**
  * An implementation of a text editor view model.
  */
-export class TextEditorViewModel implements ITextEditorViewModel {
+export
+class TextEditorViewModel implements ITextEditorViewModel {
   /**
    * A signal emitted when the state of the model changes.
    *
@@ -310,7 +290,6 @@ export class TextEditorViewModel implements ITextEditorViewModel {
     name: 'fixedHeight',
     notify: TextEditorViewModel.stateChangedSignal,
   });
-
 
   /**
    * A signal emitted when the state of the model changes.

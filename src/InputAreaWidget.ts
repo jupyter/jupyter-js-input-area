@@ -1,32 +1,38 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-
 'use strict';
 
 import * as CodeMirror from 'codemirror';
+
 import 'codemirror/lib/codemirror.css';
+
 import 'codemirror/mode/meta';
+
+import * as dmp from 'diff-match-patch';
 
 import {
   Message
 } from 'phosphor-messaging';
 
 import {
-  ResizeMessage, Widget
-} from 'phosphor-widget';
+  IChangedArgs
+} from 'phosphor-properties';
 
 import {
   ISignal, Signal
 } from 'phosphor-signaling';
 
 import {
-  IInputAreaViewModel, ITextEditorViewModel, IChangedArgs
-} from './InputAreaViewModel';
+  ResizeMessage, Widget
+} from 'phosphor-widget';
 
-import * as dmp from 'diff-match-patch';
+import {
+  IInputAreaViewModel, ITextEditorViewModel
+} from './InputAreaViewModel';
 
 
 let diffMatchPatch = new dmp.diff_match_patch()
+
 
 /**
  * A widget which hosts a CodeMirror editor.
@@ -35,7 +41,7 @@ export
 class CodeMirrorWidget extends Widget {
 
   /**
-   * Construct a CodeMirror widget
+   * Construct a CodeMirror widget.
    */
   constructor(model: ITextEditorViewModel) {
     super();
@@ -54,7 +60,7 @@ class CodeMirrorWidget extends Widget {
   }
 
   /**
-   * Update the fixedHeight
+   * Update the fixedHeight.
    */
   updateFixedHeight(fixedHeight: boolean) {
     if (fixedHeight) {
@@ -100,15 +106,15 @@ class CodeMirrorWidget extends Widget {
    * Valid mimetypes are listed in https://github.com/codemirror/CodeMirror/blob/master/mode/meta.js.
    */
   updateMimetype(mimetype: string) {
-      if (CodeMirror.mimeModes.hasOwnProperty(mimetype)) {
-        this._editor.setOption('mode', mimetype);
-      } else {
-        let info = CodeMirror.findModeByMIME(mimetype);
-        if (info) {
-          this._loadCodeMirrorMode(info.mode).then(() => {
-            this._editor.setOption('mode', mimetype);
-          })
-        }
+    if (CodeMirror.mimeModes.hasOwnProperty(mimetype)) {
+      this._editor.setOption('mode', mimetype);
+    } else {
+      let info = CodeMirror.findModeByMIME(mimetype);
+      if (info) {
+        this._loadCodeMirrorMode(info.mode).then(() => {
+          this._editor.setOption('mode', mimetype);
+        })
+      }
     }
   }
 
