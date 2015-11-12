@@ -79,7 +79,7 @@ interface ITextEditorViewModel {
   lineNumbers: boolean;
 
   /**
-   * Whether the text editor has a fixed maximum height
+   * Whether the text editor has a fixed maximum height.
    *
    * #### Notes
    * If true, the editor has a fixed maximum height.  If false, the editor
@@ -103,7 +103,7 @@ class InputAreaViewModel implements IInputAreaViewModel {
   static stateChangedSignal = new Signal<InputAreaViewModel, IChangedArgs<any>>();
 
   /**
-  * A property descriptor which determines whether the input area should be rendered
+  * A property descriptor which determines whether the input area should be rendered.
   *
   * **See also:** [[rendered]]
   */

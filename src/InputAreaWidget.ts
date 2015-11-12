@@ -158,7 +158,7 @@ class CodeMirrorWidget extends Widget {
   }
 
   /**
-   * Change handler for model updates
+   * Change handler for model updates.
    */
   private _modelUpdate(sender: ITextEditorViewModel, args: IChangedArgs<any>) {
     switch(args.name) {
@@ -181,7 +181,7 @@ class CodeMirrorWidget extends Widget {
    * Load a CodeMirror mode asynchronously.
    */
   private _loadCodeMirrorMode(mode: string) {
-    // load codemirror mode module, returning a promise
+    // load codemirror mode module, returning a promise.
     if (CodeMirror.modes.hasOwnProperty(mode)) {
       return Promise.resolve();
     } else {
