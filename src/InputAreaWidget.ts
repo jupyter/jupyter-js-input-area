@@ -23,7 +23,7 @@ import {
 } from 'phosphor-signaling';
 
 import {
-  ResizeMessage, Widget
+  ResizeMessage, Widget, Panel
 } from 'phosphor-widget';
 
 import {
@@ -192,3 +192,70 @@ class CodeMirrorWidget extends Widget {
   private _editor: CodeMirror.Editor;
   private _model: ITextEditorViewModel;
 }
+
+export
+interface FunctionTable {
+  [key: string]: Function
+}
+
+/**
+ * An input area widget, which hosts an editor widget.
+ */
+export
+class InputAreaWidget extends Panel {
+
+  static update: FunctionTable = {
+    'textEditor': InputAreaWidget.prototype.updateTextEditor,
+    'rendered': InputAreaWidget.prototype.updateRendered,
+    'collapsed': InputAreaWidget.prototype.updateCollapsed,
+    'promptNumber': InputAreaWidget.prototype.updatePromptNumber,
+    'executionCount': InputAreaWidget.prototype.updateExecutionCount
+  }
+
+  /**
+   * Construct an input area widget.
+   */
+  constructor(model: IInputAreaViewModel) {
+    super();
+    this.addClass('InputAreaWidget');
+    this._model = model;
+    for (let key in InputAreaWidget.update) {
+      InputAreaWidget.update[key].call(this, model[key]);
+    }
+    model.stateChanged.connect(this._modelUpdate, this);
+  }
+
+  /**
+   * Update the text editor model, creating a new text editor
+   * widget and detaching the old one.
+   */
+  updateTextEditor(editor: ITextEditorViewModel) {
+    this.children.assign([new CodeMirrorWidget(editor)]);
+  }
+
+  updateRendered(render: boolean) {
+
+  }
+
+  updateCollapsed(collapsed: boolean) {
+
+  }
+
+  updatePromptNumber(promptNumber: number) {
+
+  }
+
+  updateExecutionCount(executionCount: number) {
+
+  }
+
+  /**
+   * Change handler for model updates.
+   */
+  private _modelUpdate(sender: IInputAreaViewModel, args: IChangedArgs<any>) {
+    InputAreaWidget.update[args.name].call(this, args.newValue)
+  }
+
+  private _model: IInputAreaViewModel;
+}
+

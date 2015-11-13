@@ -5,7 +5,8 @@ import {
 } from 'phosphor-widget';
 
 import {
-  CodeMirrorWidget, InputAreaViewModel, TextEditorViewModel
+  InputAreaViewModel, TextEditorViewModel,
+  CodeMirrorWidget, InputAreaWidget
 } from '../lib/index';
 
 let initialCode = `def f(n):
@@ -18,7 +19,9 @@ function main(): void {
   textModel.text = initialCode;
   textModel.mimetype = 'text/x-python';
   textModel.lineNumbers = true;
-  let c = new CodeMirrorWidget(textModel);
+  let inputModel = new InputAreaViewModel();
+  inputModel.textEditor = textModel;
+  let c = new InputAreaWidget(inputModel);
   Widget.attach(c, document.body);
 }
 
