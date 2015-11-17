@@ -204,24 +204,18 @@ interface FunctionTable {
 export
 class InputAreaWidget extends Panel {
 
-  static update: FunctionTable = {
-    'textEditor': InputAreaWidget.prototype.updateTextEditor,
-    'rendered': InputAreaWidget.prototype.updateRendered,
-    'collapsed': InputAreaWidget.prototype.updateCollapsed,
-    'promptNumber': InputAreaWidget.prototype.updatePromptNumber,
-    'executionCount': InputAreaWidget.prototype.updateExecutionCount
-  }
-
   /**
    * Construct an input area widget.
    */
   constructor(model: IInputAreaViewModel) {
     super();
-    this.addClass('InputAreaWidget');
+    this.addClass('jp-InputAreaWidget');
     this._model = model;
-    for (let key in InputAreaWidget.update) {
-      InputAreaWidget.update[key].call(this, model[key]);
-    }
+    this.updateTextEditor(model.textEditor);
+    this.updateRendered(model.rendered);
+    this.updateCollapsed(model.collapsed);
+    this.updatePromptNumber(model.promptNumber);
+    this.updateExecutionCount(model.executionCount);
     model.stateChanged.connect(this._modelUpdate, this);
   }
 
@@ -253,9 +247,24 @@ class InputAreaWidget extends Panel {
    * Change handler for model updates.
    */
   private _modelUpdate(sender: IInputAreaViewModel, args: IChangedArgs<any>) {
-    InputAreaWidget.update[args.name].call(this, args.newValue)
+    switch(args.name) {
+    case 'textEditor':
+      this.updateTextEditor(args.newValue);
+      break;
+    case 'rendered':
+      this.updateRendered(args.newValue);
+      break;
+    case 'collapsed':
+      this.updateCollapsed(args.newValue);
+      break;
+    case 'promptNumber':
+      this.updatePromptNumber(args.newValue);
+      break;
+    case 'executionCount':
+      this.updateExecutionCount(args.newValue);
+      break;
+    }
   }
 
   private _model: IInputAreaViewModel;
 }
-
