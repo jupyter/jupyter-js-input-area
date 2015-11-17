@@ -45,7 +45,7 @@ class CodeMirrorWidget extends Widget {
    */
   constructor(model: ITextEditorViewModel) {
     super();
-    this.addClass('CodeMirrorWidget');
+    this.addClass('jp-CodeMirrorWidget');
     this._model = model;
     this._editor = CodeMirror(this.node);
     this.updateMimetype(model.mimetype);
@@ -64,9 +64,9 @@ class CodeMirrorWidget extends Widget {
    */
   updateFixedHeight(fixedHeight: boolean) {
     if (fixedHeight) {
-      this.addClass('CodeMirrorWidget-fixedHeight');
+      this.addClass('jp-CodeMirrorWidget-fixedHeight');
     } else {
-      this.removeClass('CodeMirrorWidget-fixedHeight');
+      this.removeClass('jp-CodeMirrorWidget-fixedHeight');
     }
   }
 
