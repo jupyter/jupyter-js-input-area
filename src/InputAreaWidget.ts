@@ -74,12 +74,12 @@ class CodeMirrorWidget extends Widget {
    * place by using the bitap algorithm to find the corresponding
    * position of the cursor in the new text.
    */
-  updateText(text: string) {
-    if (this.text !== text) {
+  protected updateText(text: string) {
+    let doc = this._editor.getDoc();
+    let oldText = doc.getValue();
+    if (oldText !== text) {
       // TODO: do something smart with all the selections
 
-      let doc = this._editor.getDoc();
-      let oldText = doc.getValue();
       let oldCursor = doc.indexFromPos(doc.getCursor());
       let cursor = 0;
       if (oldCursor === oldText.length) {
@@ -101,7 +101,7 @@ class CodeMirrorWidget extends Widget {
    * #### Notes
    * Valid mimetypes are listed in https://github.com/codemirror/CodeMirror/blob/master/mode/meta.js.
    */
-  updateMimetype(mimetype: string) {
+  protected updateMimetype(mimetype: string) {
     if (CodeMirror.mimeModes.hasOwnProperty(mimetype)) {
       this._editor.setOption('mode', mimetype);
     } else {
@@ -117,22 +117,8 @@ class CodeMirrorWidget extends Widget {
   /**
    * Update the line numbers in the editing widget.
    */
-  updateLineNumbers(lineNumbers: boolean) {
+  protected updateLineNumbers(lineNumbers: boolean) {
     this._editor.setOption('lineNumbers', lineNumbers);
-  }
-
-  /**
-   * Get the text in the widget.
-   */
-  get text(): string {
-    return this._editor.getDoc().getValue();
-  }
-
-  /**
-   * Set the text in the widget.
-   */
-  set text(text: string) {
-    this.updateText(text)
   }
 
   /**
