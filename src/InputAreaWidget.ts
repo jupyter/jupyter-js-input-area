@@ -56,18 +56,14 @@ class CodeMirrorWidget extends Widget {
     this._editor.on('change', (instance, change) => {
       this._model.text = this._editor.getDoc().getValue();
     });
-    model.stateChanged.connect(this._modelUpdate, this);
+    model.stateChanged.connect(this._onModelStateChanged, this);
   }
 
   /**
    * Update whether the editor has a fixed maximum height.
    */
-  updateFixedHeight(fixedHeight: boolean) {
-    if (fixedHeight) {
-      this.addClass('jp-CodeMirrorWidget-fixedHeight');
-    } else {
-      this.removeClass('jp-CodeMirrorWidget-fixedHeight');
-    }
+  protected updateFixedHeight(fixedHeight: boolean) {
+    this.toggleClass('jp-CodeMirroWidget-fixedHeight', fixedHeight);
   }
 
   /**
@@ -160,7 +156,7 @@ class CodeMirrorWidget extends Widget {
   /**
    * Change handler for model updates.
    */
-  private _modelUpdate(sender: ITextEditorViewModel, args: IChangedArgs<any>) {
+  protected _onModelStateChanged(sender: ITextEditorViewModel, args: IChangedArgs<any>) {
     switch(args.name) {
     case 'fixedHeight':
       this.updateFixedHeight(args.newValue);
