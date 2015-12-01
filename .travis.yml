@@ -1,8 +1,15 @@
 language: node_js
 node_js:
-  - "iojs"
+  - '0.12'
 sudo: false
+env:
+  matrix:
+    - GROUP=
+  global:
+    - GHREPO=github.com/blink1073/jupyter-js-front-matter
 install:
-  - npm install
-  - npm run build
-
+  - bash scripts/travis_install.sh
+script:
+  - bash scripts/travis_script.sh
+after_success:
+  - bash scripts/travis_after_success.sh

@@ -1,5 +1,5 @@
 {
-  "name": "input-area",
+  "name": "jupyter-js-input-area",
   "version": "0.0.2",
   "description": "Jupyter Input Area",
   "main": "lib/index.js",
@@ -13,21 +13,41 @@
     "phosphor-widget": "^1.0.0-beta"
   },
   "devDependencies": {
+    "browserify-css": "^0.8.1",
+    "browserify-istanbul": "^0.2.1",
+    "expect.js": "^0.3.1",
+    "karma": "^0.13.9",
+    "karma-browserify": "^4.3.0",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-coverage": "^0.5.0",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-ie-launcher": "^0.2.0",
+    "karma-mocha": "^0.2.0",
+    "karma-mocha-reporter": "^1.1.1",
+    "mocha": "^2.2.5",
     "nodemon": "^1.8.0",
-    "rimraf": "^2.4.3",
+    "rimraf": "^2.4.2",
     "steal": "^0.12.3",
-    "typedoc": "^0.3.12",
+    "typedoc": "^0.3.11",
     "typescript": "^1.6.2"
   },
   "scripts": {
-    "clean": "npm run clean:lib && npm run clean:example",
     "clean:lib": "rimraf lib",
     "clean:example": "rimraf example/*.js example/*.map",
+    "clean:test": "rimraf test/build && rimraf test/coverage",
+    "clean": "npm run clean:lib && npm run clean:example && npm run clean:test",
     "build:src": "tsc --project src",
+    "build:test": "tsc --project test/src",
     "build:example": "tsc --project example",
-    "build": "npm run build:src && npm run build:example",
+    "build": "npm run build:src && npm run build:example && npm run build:test",
     "docs": "rimraf docs/api && typedoc --options scripts/tdoptions.json",
     "postinstall": "npm dedupe",
+    "prepublish": "npm run build",
+    "test:chrome": "karma start --browsers=Chrome test/karma.conf.js",
+    "test:coverage": "karma start test/karma-cov.conf.js",
+    "test:firefox": "karma start --browsers=Firefox test/karma.conf.js",
+    "test:ie": "karma start --browsers=IE test/karma.conf.js",
+    "test": "npm run test:firefox",
     "watch": "npm run watch:build -s",
     "watch:build": "nodemon -q -w src/ --ext ts,js --exec 'npm run build'"
   },
@@ -46,15 +66,13 @@
     ]
   },
   "keywords": [
-    "jupyter",
-    "input",
-    "input-area"
+    "jupyter"
   ],
-  "author": "Jupyter Project",
+  "author": "Project Jupyter",
   "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/jupyter/jupyter-js-input-area/issues"
   },
-  "homepage": "https://github.com/jupyter/jupyter-js-input-area#readme"
+  "homepage": "https://github.com/jupyter/jupyter-js-input-area"
 
 }
