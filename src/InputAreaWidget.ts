@@ -56,7 +56,7 @@ class CodeMirrorWidget extends Widget {
     this._editor.on('change', (instance, change) => {
       this._model.text = this._editor.getDoc().getValue();
     });
-    model.stateChanged.connect(this._onModelStateChanged, this);
+    model.stateChanged.connect(this.onModelStateChanged, this);
   }
 
   /**
@@ -142,7 +142,7 @@ class CodeMirrorWidget extends Widget {
   /**
    * Change handler for model updates.
    */
-  protected _onModelStateChanged(sender: ITextEditorViewModel, args: IChangedArgs<any>) {
+  protected onModelStateChanged(sender: ITextEditorViewModel, args: IChangedArgs<any>) {
     switch(args.name) {
     case 'fixedHeight':
       this.updateFixedHeight(args.newValue);
