@@ -4,11 +4,18 @@
 
 import expect = require('expect.js');
 
+import {
+  TextEditorViewModel
+} from '../../lib';
+
 
 describe('jupyter-js-input-area', () => {
 
-  it('should always pass', () => {
-
+  describe('TextEditorViewModel', () => {
+    it('should always pass', () => {
+      let textModel = new TextEditorViewModel();
+      textModel.lineNumbers = true;
+      expect(textModel.lineNumbers).to.be(true);
+    });
   });
-
 });
