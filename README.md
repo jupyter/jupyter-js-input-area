@@ -4,7 +4,7 @@ jupyter-js-input-area
 [![Build Status](https://travis-ci.org/jupyter/jupyter-js-input-area.svg)](https://travis-ci.org/jupyter/jupyter-js-input-area?branch=master)
 [![Coverage Status](https://coveralls.io/repos/jupyter/jupyter-js-input-area/badge.svg?branch=master&service=github)](https://coveralls.io/github/jupyter/jupyter-js-input-area?branch=master)
 
-Front matter for a Jupyter jupyter-js-based application.
+An input area widget and model for the Jupyter notebook.
 
 [API Docs](http://jupyter.github.io/jupyter-js-input-area/api/)
 
