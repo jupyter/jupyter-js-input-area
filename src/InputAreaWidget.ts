@@ -4,6 +4,20 @@
 
 import * as CodeMirror from 'codemirror';
 
+
+/*
+ * Importing css directly from codemirror doesn't work well with browserify
+ * see https://www.npmjs.com/package/browserify-css#1-how-do-i-include-css-files-located-inside-the-node-modules-folder
+ *
+ * So instead of doing this:
+ * import 'codemirror/lib/codemirror.css';
+ * we use a css import rule in a local css file (see below).
+ * Ideally, we *would* import directly from codemirror, since the css import
+ * exposes the detail that codemirror is required as a node dependency.
+ *
+ * TODO: change the tests to use systemjs to import modules instead of browserify, then
+ * change the css back to just directly importing codemirror css.
+ */
 import './InputAreaWidget.css';
 
 import 'codemirror/mode/meta';
