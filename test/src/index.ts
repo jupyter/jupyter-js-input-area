@@ -12,7 +12,7 @@ import {
 describe('jupyter-js-input-area', () => {
 
   describe('TextEditorViewModel', () => {
-    it('should always pass', () => {
+    it('should instantiate', () => {
       let textModel = new TextEditorViewModel();
       textModel.lineNumbers = true;
       expect(textModel.lineNumbers).to.be(true);
