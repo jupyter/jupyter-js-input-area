@@ -13,9 +13,11 @@
     "phosphor-widget": "^1.0.0-beta"
   },
   "devDependencies": {
+    "browserify": "^12.0.1",
     "browserify-css": "^0.8.1",
     "browserify-istanbul": "^0.2.1",
     "expect.js": "^0.3.1",
+    "glob-copy": "^0.1.0",
     "karma": "^0.13.9",
     "karma-browserify": "^4.3.0",
     "karma-chrome-launcher": "^0.2.0",
@@ -36,7 +38,7 @@
     "clean:example": "rimraf example/*.js example/*.map",
     "clean:test": "rimraf test/build && rimraf test/coverage",
     "clean": "npm run clean:lib && npm run clean:example && npm run clean:test",
-    "build:src": "tsc --project src",
+    "build:src": "tsc --project src && node scripts/copycss.js",
     "build:test": "tsc --project test/src",
     "build:example": "tsc --project example",
     "build": "npm run build:src && npm run build:example && npm run build:test",
@@ -74,5 +76,4 @@
     "url": "https://github.com/jupyter/jupyter-js-input-area/issues"
   },
   "homepage": "https://github.com/jupyter/jupyter-js-input-area"
-
 }
