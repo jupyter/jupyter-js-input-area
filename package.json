@@ -59,9 +59,9 @@
     "url": "git+https://github.com/jupyter/jupyter-js-input-area.git"
   },
   "files": [
-    "lib/index.js",
-    "lib/index.css",
-    "lib/index.d.ts"
+    "lib/*.js",
+    "lib/*.css",
+    "lib/*.d.ts"
   ],
   "system": {
     "npmIgnore": [
