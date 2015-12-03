@@ -21,16 +21,10 @@ describe('jupyter-js-input-area', () => {
     it('should instantiate', () => {
       let textModel = new TextEditorViewModel();
       textModel.mimetype = 'text/x-python';
+      textModel.text = `print("hello world")`;
       let cm = new CodeMirrorWidget(textModel);
-      expect(cm.node).to.be(true);
+      expect(cm.node).to.not.be(undefined);
     });
   });
 
-  describe('TextEditorViewModel', () => {
-    it('should instantiate', () => {
-      let textModel = new TextEditorViewModel();
-      textModel.lineNumbers = true;
-      expect(textModel.lineNumbers).to.be(true);
-    });
-  });
 });
