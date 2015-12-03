@@ -3,10 +3,9 @@
 'use strict';
 
 import * as CodeMirror from 'codemirror';
-
+import 'codemirror/mode/meta';
 import 'codemirror/lib/codemirror.css';
 
-import 'codemirror/mode/meta';
 
 import * as dmp from 'diff-match-patch';
 
