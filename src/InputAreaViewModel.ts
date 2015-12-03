@@ -279,11 +279,14 @@ class TextEditorViewModel implements ITextEditorViewModel {
   /**
   * A property descriptor which contains the text of the editor.
   *
+  * This defaults to the empty string.
+  *
   * **See also:** [[text]]
   */
   static textProperty = new Property<TextEditorViewModel, string>({
     name: 'text',
     notify: TextEditorViewModel.stateChangedSignal,
+    value: '',
   });
 
   /**
@@ -292,31 +295,40 @@ class TextEditorViewModel implements ITextEditorViewModel {
   * #### Notes
   * The mimetype is used to determine the syntax highlighting, for example.
   *
+  * This defaults to the empty string.
+  *
   * **See also:** [[mimetype]]
   */
   static mimetypeProperty = new Property<TextEditorViewModel, string>({
     name: 'mimetype',
     notify: TextEditorViewModel.stateChangedSignal,
+    value: '',
   });
 
   /**
   * A property descriptor which determines whether the line numbers should be displayed.
+  *
+  * This defaults to true.
   *
   * **See also:** [[lineNumbers]]
   */
   static lineNumbersProperty = new Property<TextEditorViewModel, boolean>({
     name: 'lineNumbers',
     notify: TextEditorViewModel.stateChangedSignal,
+    value: true,
   });
 
   /**
   * A property descriptor which determines whether the editor height should be constrained.
+  *
+  * This defaults to false.
   *
   * **See also:** [[fixedHeight]]
   */
   static fixedHeightProperty = new Property<TextEditorViewModel, boolean>({
     name: 'fixedHeight',
     notify: TextEditorViewModel.stateChangedSignal,
+    value: false,
   });
 
   /**
