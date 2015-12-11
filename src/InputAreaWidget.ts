@@ -196,7 +196,6 @@ class InputAreaWidget extends Panel {
     this.addClass('jp-InputAreaWidget');
     this._model = model;
     this.updateTextEditor(model.textEditor);
-    this.updateRendered(model.rendered);
     this.updateCollapsed(model.collapsed);
     this.updatePromptNumber(model.promptNumber);
     this.updateExecutionCount(model.executionCount);
@@ -209,10 +208,6 @@ class InputAreaWidget extends Panel {
    */
   updateTextEditor(editor: ITextEditorViewModel) {
     this.children.assign([new CodeMirrorWidget(editor)]);
-  }
-
-  updateRendered(render: boolean) {
-
   }
 
   updateCollapsed(collapsed: boolean) {
@@ -234,9 +229,6 @@ class InputAreaWidget extends Panel {
     switch(args.name) {
     case 'textEditor':
       this.updateTextEditor(args.newValue);
-      break;
-    case 'rendered':
-      this.updateRendered(args.newValue);
       break;
     case 'collapsed':
       this.updateCollapsed(args.newValue);
