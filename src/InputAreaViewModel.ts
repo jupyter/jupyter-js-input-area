@@ -28,12 +28,9 @@ interface IInputAreaViewModel {
   textEditor: ITextEditorViewModel;
 
   /**
-   * Whether the input area should be rendered as a read-only display or editable source.
-   */
-  rendered: boolean;
-
-  /**
    * Whether the input area should be collapsed (hidden) or expanded.
+   * 
+   * // TODO: this should probably be a property on the cell, not the input area.
    */
   collapsed: boolean;
 
@@ -103,16 +100,6 @@ class InputAreaViewModel implements IInputAreaViewModel {
   static stateChangedSignal = new Signal<InputAreaViewModel, IChangedArgs<any>>();
 
   /**
-  * A property descriptor which determines whether the input area should be rendered.
-  *
-  * **See also:** [[rendered]]
-  */
-  static renderedProperty = new Property<InputAreaViewModel, boolean>({
-    name: 'rendered',
-    notify: InputAreaViewModel.stateChangedSignal,
-  });
-
-  /**
   * A property descriptor which determines whether the input area is collapsed or displayed.
   *
   * **See also:** [[collapsed]]
@@ -160,26 +147,6 @@ class InputAreaViewModel implements IInputAreaViewModel {
    */
   get stateChanged() {
     return InputAreaViewModel.stateChangedSignal.bind(this);
-  }
-
-  /**
-   * Get whether the input area should be a rendered representation.
-   *
-   * #### Notes
-   * This is a pure delegate to the [[renderedProperty]].
-   */
-  get rendered() {
-    return InputAreaViewModel.renderedProperty.get(this);
-  }
-
-  /**
-   * Set whether the input area should be a rendered representation.
-   *
-   * #### Notes
-   * This is a pure delegate to the [[renderedProperty]].
-   */
-  set rendered(value: boolean) {
-    InputAreaViewModel.renderedProperty.set(this, value);
   }
 
   /**
