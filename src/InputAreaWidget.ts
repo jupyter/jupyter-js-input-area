@@ -147,6 +147,9 @@ class CodeMirrorWidget extends Widget {
       this.updateFixedHeight(args.newValue);
       break;
     case 'text':
+      // TODO: be smarter - only update the text if the widget is visible
+      // if the widget isn't visible, set a dirty flag and update
+      // only when the widget is attached.
       this.updateText(args.newValue);
       break;
     case 'mimetype':
