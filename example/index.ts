@@ -22,7 +22,7 @@ function main(): void {
   let inputModel = new InputAreaViewModel();
   inputModel.textEditor = textModel;
   let c = new InputAreaWidget(inputModel);
-  Widget.attach(c, document.body);
+  c.attach(document.body);
 }
 
 main();

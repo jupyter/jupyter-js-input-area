@@ -207,7 +207,10 @@ class InputAreaWidget extends Panel {
    * widget and detaching the old one.
    */
   updateTextEditor(editor: ITextEditorViewModel) {
-    this.children.assign([new CodeMirrorWidget(editor)]);
+    if (this.childCount() > 0) {
+      this.childAt(0).dispose();
+    }
+    this.addChild(new CodeMirrorWidget(editor));
   }
 
   updateCollapsed(collapsed: boolean) {
