@@ -22,8 +22,12 @@ import {
 } from 'phosphor-signaling';
 
 import {
-  ResizeMessage, Widget, Panel
+  ResizeMessage, Widget
 } from 'phosphor-widget';
+
+import {
+  Panel
+} from 'phosphor-panel';
 
 import {
   IInputAreaViewModel, ITextEditorViewModel
