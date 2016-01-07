@@ -10,6 +10,9 @@ import {
   ISignal, Signal
 } from 'phosphor-signaling';
 
+import {
+  IEditorModel, EditorModel
+} from 'jupyter-js-editor';
 
 /**
  * The view model for an input area.
@@ -25,7 +28,7 @@ interface IInputAreaViewModel {
   /**
    * The text editor view model.
    */
-  textEditor: ITextEditorViewModel;
+  textEditor: IEditorModel;
 
   /**
    * Whether the input area should be collapsed (hidden) or expanded.
@@ -45,45 +48,6 @@ interface IInputAreaViewModel {
   executionCount: number;
 }
 
-
-/**
- * The view model for a text editor.
- */
-export
-interface ITextEditorViewModel {
-
-  /**
-   * A signal emitted when state of the text area changes.
-   */
-  stateChanged: ISignal<ITextEditorViewModel, IChangedArgs<any>>;
-
-  /**
-   * The text in the text editor.
-   */
-  text: string;
-
-  /**
-   * The mimetype of the text.
-   *
-   * #### Notes
-   * The mimetype is used to set the syntax highlighting, for example.
-   */
-  mimetype: string;
-
-  /**
-   * Whether to display the line numbers in the text editor.
-   */
-  lineNumbers: boolean;
-
-  /**
-   * Whether the text editor has a fixed maximum height.
-   *
-   * #### Notes
-   * If true, the editor has a fixed maximum height.  If false, the editor
-   * resizes to fit the content.
-   */
-  fixedHeight: boolean;
-}
 
 
 /**
@@ -134,7 +98,7 @@ class InputAreaViewModel implements IInputAreaViewModel {
   *
   * **See also:** [[textEditor]]
   */
-  static textEditorProperty = new Property<InputAreaViewModel, TextEditorViewModel>({
+  static textEditorProperty = new Property<InputAreaViewModel, EditorModel>({
     name: 'textEditor',
     notify: InputAreaViewModel.stateChangedSignal,
   });
@@ -225,167 +189,7 @@ class InputAreaViewModel implements IInputAreaViewModel {
    * #### Notes
    * This is a pure delegate to the [[textEditorProperty]].
    */
-  set textEditor(value: TextEditorViewModel) {
+  set textEditor(value: EditorModel) {
     InputAreaViewModel.textEditorProperty.set(this, value);
   }
 }
-
-
-/**
- * An implementation of a text editor view model.
- */
-export
-class TextEditorViewModel implements ITextEditorViewModel {
-  /**
-   * A signal emitted when the state of the model changes.
-   *
-   * **See also**: [[stateChanged]]
-   */
-  static stateChangedSignal = new Signal<TextEditorViewModel, IChangedArgs<any>>();
-
-  /**
-  * A property descriptor which contains the text of the editor.
-  *
-  * This defaults to the empty string.
-  *
-  * **See also:** [[text]]
-  */
-  static textProperty = new Property<TextEditorViewModel, string>({
-    name: 'text',
-    notify: TextEditorViewModel.stateChangedSignal,
-    value: '',
-  });
-
-  /**
-  * A property descriptor which contains the mimetype of the editor contents.
-  *
-  * #### Notes
-  * The mimetype is used to determine the syntax highlighting, for example.
-  *
-  * This defaults to the empty string.
-  *
-  * **See also:** [[mimetype]]
-  */
-  static mimetypeProperty = new Property<TextEditorViewModel, string>({
-    name: 'mimetype',
-    notify: TextEditorViewModel.stateChangedSignal,
-    value: '',
-  });
-
-  /**
-  * A property descriptor which determines whether the line numbers should be displayed.
-  *
-  * This defaults to true.
-  *
-  * **See also:** [[lineNumbers]]
-  */
-  static lineNumbersProperty = new Property<TextEditorViewModel, boolean>({
-    name: 'lineNumbers',
-    notify: TextEditorViewModel.stateChangedSignal,
-    value: true,
-  });
-
-  /**
-  * A property descriptor which determines whether the editor height should be constrained.
-  *
-  * This defaults to false.
-  *
-  * **See also:** [[fixedHeight]]
-  */
-  static fixedHeightProperty = new Property<TextEditorViewModel, boolean>({
-    name: 'fixedHeight',
-    notify: TextEditorViewModel.stateChangedSignal,
-    value: false,
-  });
-
-  /**
-   * A signal emitted when the state of the model changes.
-   *
-   * #### Notes
-   * This is a pure delegate to the [[stateChangedSignal]].
-   */
-  get stateChanged() {
-    return TextEditorViewModel.stateChangedSignal.bind(this);
-  }
-
-  /**
-   * Get the text of the editor.
-   *
-   * #### Notes
-   * This is a pure delegate to the [[textProperty]].
-   */
-  get text() {
-    return TextEditorViewModel.textProperty.get(this);
-  }
-
-  /**
-   * Set the text of the editor.
-   *
-   * #### Notes
-   * This is a pure delegate to the [[textProperty]].
-   */
-  set text(value: string) {
-    TextEditorViewModel.textProperty.set(this, value);
-  }
-
-  /**
-   * Get the mimetype of the editor contents.
-   *
-   * #### Notes
-   * This is a pure delegate to the [[mimetypeProperty]].
-   */
-  get mimetype() {
-    return TextEditorViewModel.mimetypeProperty.get(this);
-  }
-
-  /**
-   * Set the mimetype of the editor contents.
-   *
-   * #### Notes
-   * This is a pure delegate to the [[mimetypeProperty]].
-   */
-  set mimetype(value: string) {
-    TextEditorViewModel.mimetypeProperty.set(this, value);
-  }
-
-  /**
-   * Get whether the line numbers should be displayed in the text editor.
-   *
-   * #### Notes
-   * This is a pure delegate to the [[lineNumbersProperty]].
-   */
-  get lineNumbers() {
-    return TextEditorViewModel.lineNumbersProperty.get(this);
-  }
-
-  /**
-   * Set whether the line numbers should be displayed in the text editor.
-   *
-   * #### Notes
-   * This is a pure delegate to the [[lineNumbersProperty]].
-   */
-  set lineNumbers(value: boolean) {
-    TextEditorViewModel.lineNumbersProperty.set(this, value);
-  }
-
-  /**
-   * Get whether the editor height should be constrained.
-   *
-   * #### Notes
-   * This is a pure delegate to the [[fixedHeightProperty]].
-   */
-  get fixedHeight() {
-    return TextEditorViewModel.fixedHeightProperty.get(this);
-  }
-
-  /**
-   * Set whether the editor height should be constrained.
-   *
-   * #### Notes
-   * This is a pure delegate to the [[fixedHeightProperty]].
-   */
-  set fixedHeight(value: boolean) {
-    TextEditorViewModel.fixedHeightProperty.set(this, value);
-  }
-}
-

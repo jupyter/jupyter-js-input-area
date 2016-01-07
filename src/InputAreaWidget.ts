@@ -30,161 +30,12 @@ import {
 } from 'phosphor-panel';
 
 import {
-  IInputAreaViewModel, ITextEditorViewModel
+  IInputAreaViewModel
 } from './InputAreaViewModel';
 
-
-let diffMatchPatch = new dmp.diff_match_patch()
-
-
-/**
- * A widget which hosts a CodeMirror editor.
- */
-export
-class CodeMirrorWidget extends Widget {
-
-  /**
-   * Construct a CodeMirror widget.
-   */
-  constructor(model: ITextEditorViewModel) {
-    super();
-    this.addClass('jp-CodeMirrorWidget');
-    this._model = model;
-    this._editor = CodeMirror(this.node);
-    this.updateMimetype(model.mimetype);
-    this.updateLineNumbers(model.lineNumbers);
-    this.updateFixedHeight(model.fixedHeight);
-    this.updateText(model.text);
-
-    this._editor.on('change', (instance, change) => {
-      this._model.text = this._editor.getDoc().getValue();
-    });
-    model.stateChanged.connect(this.onModelStateChanged, this);
-  }
-
-  /**
-   * Update whether the editor has a fixed maximum height.
-   */
-  protected updateFixedHeight(fixedHeight: boolean) {
-    this.toggleClass('jp-CodeMirroWidget-fixedHeight', fixedHeight);
-  }
-
-  /**
-   * Update the text in the widget.
-   *
-   * #### Notes
-   * This function attempts to restore the cursor to the correct
-   * place by using the bitap algorithm to find the corresponding
-   * position of the cursor in the new text.
-   */
-  protected updateText(text: string) {
-    let doc = this._editor.getDoc();
-    let oldText = doc.getValue();
-    if (oldText !== text) {
-      // TODO: do something smart with all the selections
-
-      let oldCursor = doc.indexFromPos(doc.getCursor());
-      let cursor = 0;
-      if (oldCursor === oldText.length) {
-        // if the cursor was at the end, keep it at the end
-        cursor = text.length;
-      } else {
-        let fragment = oldText.substr(oldCursor, 10);
-        cursor = diffMatchPatch.match_main(text, fragment, oldCursor);
-      }
-
-      doc.setValue(text);
-      doc.setCursor(doc.posFromIndex(cursor));
-    }
-  }
-
-  /**
-   * Set the mode by giving the mimetype.
-   *
-   * #### Notes
-   * Valid mimetypes are listed in https://github.com/codemirror/CodeMirror/blob/master/mode/meta.js.
-   */
-  protected updateMimetype(mimetype: string) {
-    if (CodeMirror.mimeModes.hasOwnProperty(mimetype)) {
-      this._editor.setOption('mode', mimetype);
-    } else {
-      let info = CodeMirror.findModeByMIME(mimetype);
-      if (info) {
-        this._loadCodeMirrorMode(info.mode).then(() => {
-          this._editor.setOption('mode', mimetype);
-        })
-      }
-    }
-  }
-
-  /**
-   * Update the line numbers in the editing widget.
-   */
-  protected updateLineNumbers(lineNumbers: boolean) {
-    this._editor.setOption('lineNumbers', lineNumbers);
-  }
-
-  /**
-   * Handle afterAttach messages.
-   */
-  protected onAfterAttach(msg: Message): void {
-    this._editor.refresh();
-  }
-
-  /**
-   * Handle resize messages.
-   */
-  protected onResize(msg: ResizeMessage): void {
-    if (msg.width < 0 || msg.height < 0) {
-      this._editor.refresh();
-    } else {
-      this._editor.setSize(msg.width, msg.height);
-    }
-  }
-
-  /**
-   * Change handler for model updates.
-   */
-  protected onModelStateChanged(sender: ITextEditorViewModel, args: IChangedArgs<any>) {
-    switch(args.name) {
-    case 'fixedHeight':
-      this.updateFixedHeight(args.newValue);
-      break;
-    case 'text':
-      // TODO: be smarter - only update the text if the widget is visible
-      // if the widget isn't visible, set a dirty flag and update
-      // only when the widget is attached.
-      this.updateText(args.newValue);
-      break;
-    case 'mimetype':
-      this.updateMimetype(args.newValue);
-      break;
-    case 'lineNumbers':
-      this.updateLineNumbers(args.newValue);
-      break;
-    }
-  }
-
-  /**
-   * Load a CodeMirror mode asynchronously.
-   */
-  private _loadCodeMirrorMode(mode: string) {
-    // load codemirror mode module, returning a promise.
-    if (CodeMirror.modes.hasOwnProperty(mode)) {
-      return Promise.resolve();
-    } else {
-      return System.import(`codemirror/mode/${mode}/${mode}`);
-    }
-  }
-
-  private _editor: CodeMirror.Editor;
-  private _model: ITextEditorViewModel;
-}
-
-export
-interface FunctionTable {
-  [key: string]: Function
-}
+import {
+  CodeMirrorWidget, IEditorModel
+} from 'jupyter-js-editor';
 
 /**
  * An input area widget, which hosts an editor widget.
@@ -210,7 +61,7 @@ class InputAreaWidget extends Panel {
    * Update the text editor model, creating a new text editor
    * widget and detaching the old one.
    */
-  updateTextEditor(editor: ITextEditorViewModel) {
+  updateTextEditor(editor: IEditorModel) {
     if (this.childCount() > 0) {
       this.childAt(0).dispose();
     }

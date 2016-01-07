@@ -5,9 +5,12 @@ import {
 } from 'phosphor-widget';
 
 import {
-  InputAreaViewModel, TextEditorViewModel,
-  CodeMirrorWidget, InputAreaWidget
+  InputAreaViewModel, InputAreaWidget
 } from '../lib/index';
+
+import {
+  EditorModel, CodeMirrorWidget
+} from 'jupyter-js-editor';
 
 let initialCode = `def f(n):
     for i in range(n):
@@ -15,7 +18,7 @@ let initialCode = `def f(n):
 `;
 
 function main(): void {
-  let textModel = new TextEditorViewModel();
+  let textModel = new EditorModel();
   textModel.text = initialCode;
   textModel.mimetype = 'text/x-python';
   textModel.lineNumbers = true;
