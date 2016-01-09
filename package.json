@@ -50,6 +50,7 @@
     "docs": "rimraf docs/api && typedoc --options scripts/tdoptions.json",
     "postinstall": "npm dedupe",
     "prepublish": "npm run build",
+    "test": "echo 'no test suite'",
     "watch": "npm run watch:build -s",
     "watch:build": "nodemon -q -w src/ --ext ts,js --exec 'npm run build'"
   },
