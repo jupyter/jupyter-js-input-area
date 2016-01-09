@@ -15,18 +15,18 @@ import {
 } from 'jupyter-js-editor';
 
 /**
- * The view model for an input area.
+ * The model for an input area.
  */
 export
-interface IInputAreaViewModel {
+interface IInputAreaModel {
 
   /**
    * A signal emitted when state of the input area changes.
    */
-  stateChanged: ISignal<IInputAreaViewModel, IChangedArgs<any>>;
+  stateChanged: ISignal<IInputAreaModel, IChangedArgs<any>>;
 
   /**
-   * The text editor view model.
+   * The text editor model.
    */
   textEditor: IEditorModel;
 
@@ -51,26 +51,26 @@ interface IInputAreaViewModel {
 
 
 /**
- * An implementation of an input area view model.
+ * An implementation of an input area model.
  */
 export
-class InputAreaViewModel implements IInputAreaViewModel {
+class InputAreaModel implements IInputAreaModel {
 
   /**
    * A signal emitted when the state of the model changes.
    *
    * **See also:** [[stateChanged]]
    */
-  static stateChangedSignal = new Signal<InputAreaViewModel, IChangedArgs<any>>();
+  static stateChangedSignal = new Signal<InputAreaModel, IChangedArgs<any>>();
 
   /**
   * A property descriptor which determines whether the input area is collapsed or displayed.
   *
   * **See also:** [[collapsed]]
   */
-  static collapsedProperty = new Property<InputAreaViewModel, boolean>({
+  static collapsedProperty = new Property<InputAreaModel, boolean>({
     name: 'collapsed',
-    notify: InputAreaViewModel.stateChangedSignal,
+    notify: InputAreaModel.stateChangedSignal,
   });
 
   /**
@@ -78,9 +78,9 @@ class InputAreaViewModel implements IInputAreaViewModel {
   *
   * **See also:** [[promptNumber]]
   */
-  static promptNumberProperty = new Property<InputAreaViewModel, number>({
+  static promptNumberProperty = new Property<InputAreaModel, number>({
     name: 'promptNumber',
-    notify: InputAreaViewModel.stateChangedSignal,
+    notify: InputAreaModel.stateChangedSignal,
   });
 
   /**
@@ -88,19 +88,19 @@ class InputAreaViewModel implements IInputAreaViewModel {
   *
   * **See also:** [[executionCount]]
   */
-  static executionCountProperty = new Property<InputAreaViewModel, number>({
+  static executionCountProperty = new Property<InputAreaModel, number>({
     name: 'executionCount',
-    notify: InputAreaViewModel.stateChangedSignal,
+    notify: InputAreaModel.stateChangedSignal,
   });
 
   /**
-  * A property descriptor containing the text editor viewmodel.
+  * A property descriptor containing the text editor Model.
   *
   * **See also:** [[textEditor]]
   */
-  static textEditorProperty = new Property<InputAreaViewModel, EditorModel>({
+  static textEditorProperty = new Property<InputAreaModel, EditorModel>({
     name: 'textEditor',
-    notify: InputAreaViewModel.stateChangedSignal,
+    notify: InputAreaModel.stateChangedSignal,
   });
 
   /**
@@ -110,7 +110,7 @@ class InputAreaViewModel implements IInputAreaViewModel {
    * This is a pure delegate to the [[stateChangedSignal]].
    */
   get stateChanged() {
-    return InputAreaViewModel.stateChangedSignal.bind(this);
+    return InputAreaModel.stateChangedSignal.bind(this);
   }
 
   /**
@@ -120,7 +120,7 @@ class InputAreaViewModel implements IInputAreaViewModel {
    * This is a pure delegate to the [[collapsedProperty]].
    */
   get collapsed() {
-    return InputAreaViewModel.collapsedProperty.get(this);
+    return InputAreaModel.collapsedProperty.get(this);
   }
 
   /**
@@ -130,7 +130,7 @@ class InputAreaViewModel implements IInputAreaViewModel {
    * This is a pure delegate to the [[collapsedProperty]].
    */
   set collapsed(value: boolean) {
-    InputAreaViewModel.collapsedProperty.set(this, value);
+    InputAreaModel.collapsedProperty.set(this, value);
   }
 
   /**
@@ -140,7 +140,7 @@ class InputAreaViewModel implements IInputAreaViewModel {
    * This is a pure delegate to the [[promptNumberProperty]].
    */
   get promptNumber() {
-    return InputAreaViewModel.promptNumberProperty.get(this);
+    return InputAreaModel.promptNumberProperty.get(this);
   }
 
   /**
@@ -150,7 +150,7 @@ class InputAreaViewModel implements IInputAreaViewModel {
    * This is a pure delegate to the [[promptNumberProperty]].
    */
   set promptNumber(value: number) {
-    InputAreaViewModel.promptNumberProperty.set(this, value);
+    InputAreaModel.promptNumberProperty.set(this, value);
   }
 
   /**
@@ -160,7 +160,7 @@ class InputAreaViewModel implements IInputAreaViewModel {
    * This is a pure delegate to the [[executionCountProperty]].
    */
   get executionCount() {
-    return InputAreaViewModel.executionCountProperty.get(this);
+    return InputAreaModel.executionCountProperty.get(this);
   }
 
   /**
@@ -170,26 +170,26 @@ class InputAreaViewModel implements IInputAreaViewModel {
    * This is a pure delegate to the [[executionCountProperty]].
    */
   set executionCount(value: number) {
-    InputAreaViewModel.executionCountProperty.set(this, value);
+    InputAreaModel.executionCountProperty.set(this, value);
   }
 
   /**
-   * Get the text editor viewmodel.
+   * Get the text editor Model.
    *
    * #### Notes
    * This is a pure delegate to the [[textEditorProperty]].
    */
   get textEditor() {
-    return InputAreaViewModel.textEditorProperty.get(this);
+    return InputAreaModel.textEditorProperty.get(this);
   }
   
   /**
-   * Set the text editor viewmodel.
+   * Set the text editor Model.
    *
    * #### Notes
    * This is a pure delegate to the [[textEditorProperty]].
    */
   set textEditor(value: EditorModel) {
-    InputAreaViewModel.textEditorProperty.set(this, value);
+    InputAreaModel.textEditorProperty.set(this, value);
   }
 }

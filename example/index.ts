@@ -5,7 +5,7 @@ import {
 } from 'phosphor-widget';
 
 import {
-  InputAreaViewModel, InputAreaWidget
+  InputAreaModel, InputAreaWidget
 } from '../lib/index';
 
 import {
@@ -22,7 +22,7 @@ function main(): void {
   textModel.text = initialCode;
   textModel.mimetype = 'text/x-python';
   textModel.lineNumbers = true;
-  let inputModel = new InputAreaViewModel();
+  let inputModel = new InputAreaModel();
   inputModel.textEditor = textModel;
   let c = new InputAreaWidget(inputModel);
   c.attach(document.body);

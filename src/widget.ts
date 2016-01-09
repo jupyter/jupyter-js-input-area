@@ -2,13 +2,6 @@
 // Distributed under the terms of the Modified BSD License.
 'use strict';
 
-import * as CodeMirror from 'codemirror';
-import 'codemirror/mode/meta';
-import 'codemirror/lib/codemirror.css';
-
-
-import * as dmp from 'diff-match-patch';
-
 import {
   Message
 } from 'phosphor-messaging';
@@ -26,12 +19,12 @@ import {
 } from 'phosphor-widget';
 
 import {
-  Panel
+  PanelLayout
 } from 'phosphor-panel';
 
 import {
-  IInputAreaViewModel
-} from './InputAreaViewModel';
+  IInputAreaModel
+} from './model';
 
 import {
   CodeMirrorWidget, IEditorModel
@@ -41,19 +34,17 @@ import {
  * An input area widget, which hosts an editor widget.
  */
 export
-class InputAreaWidget extends Panel {
+class InputAreaWidget extends Widget {
 
   /**
    * Construct an input area widget.
    */
-  constructor(model: IInputAreaViewModel) {
+  constructor(model: IInputAreaModel) {
     super();
     this.addClass('jp-InputAreaWidget');
     this._model = model;
+    this.layout = new PanelLayout();
     this.updateTextEditor(model.textEditor);
-    this.updateCollapsed(model.collapsed);
-    this.updatePromptNumber(model.promptNumber);
-    this.updateExecutionCount(model.executionCount);
     model.stateChanged.connect(this._modelUpdate, this);
   }
 
@@ -62,43 +53,29 @@ class InputAreaWidget extends Panel {
    * widget and detaching the old one.
    */
   updateTextEditor(editor: IEditorModel) {
-    if (this.childCount() > 0) {
-      this.childAt(0).dispose();
+    let layout = this.layout as PanelLayout;
+    if (layout.childCount() > 0) {
+      layout.childAt(0).dispose();
     }
-    this.addChild(new CodeMirrorWidget(editor));
-  }
-
-  updateCollapsed(collapsed: boolean) {
-
-  }
-
-  updatePromptNumber(promptNumber: number) {
-
-  }
-
-  updateExecutionCount(executionCount: number) {
-
+    layout.addChild(new CodeMirrorWidget(editor));
   }
 
   /**
    * Change handler for model updates.
    */
-  private _modelUpdate(sender: IInputAreaViewModel, args: IChangedArgs<any>) {
+  private _modelUpdate(sender: IInputAreaModel, args: IChangedArgs<any>) {
     switch(args.name) {
     case 'textEditor':
       this.updateTextEditor(args.newValue);
       break;
     case 'collapsed':
-      this.updateCollapsed(args.newValue);
       break;
     case 'promptNumber':
-      this.updatePromptNumber(args.newValue);
       break;
     case 'executionCount':
-      this.updateExecutionCount(args.newValue);
       break;
     }
   }
 
-  private _model: IInputAreaViewModel;
+  private _model: IInputAreaModel;
 }
