@@ -6,11 +6,14 @@ import {
 
 import {
   InputAreaModel, InputAreaWidget
-} from '../lib/index';
+} from '../../lib/index';
 
 import {
   EditorModel, CodeMirrorWidget
 } from 'jupyter-js-editor';
+
+import '../index.css';
+
 
 let initialCode = `def f(n):
     for i in range(n):
@@ -28,4 +31,4 @@ function main(): void {
   c.attach(document.body);
 }
 
-main();
+window.onload = main;
