@@ -10,7 +10,7 @@ then
 
     git add .
     git commit -m "Deployed to GitHub Pages"
-    git push --force --quiet "https://${GHTOKEN}@${GH_REF}" master:gh-pages 1>  /dev/null
+    git push --force --quiet "https://${GHTOKEN}@${GHREPO}" master:gh-pages 1>  /dev/null
     )
 else
     echo "-- will only push docs from master --"
