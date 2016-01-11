@@ -1,15 +1,16 @@
 language: node_js
 node_js:
-  - '0.12'
+- '0.12'
 sudo: false
 env:
   matrix:
-    - GROUP=
+  - GROUP=
   global:
-    - GHREPO=github.com/blink1073/jupyter-js-front-matter
+  - GHREPO=github.com/blink1073/jupyter-js-front-matter
+  - secure: YurV6SpHNdphIv7PFBupSGjZESFWknEMMGaxU0GJ7EOiOGYfdIEl/hlJwl1ds3cr7qdHQiqAkVELQX2NJWLWkoJhg2nwS4kKyMKxkU1wslBPQFj4aNvfhKDdjKSFnOT70DeMpnjLTHcAO9sr2mU6bw+UKpnHmZ+nUA/dmyItmlg1o7p4wbVqFu+XEKYpmzwVVioOAiwhmfslQpWieEYFStVWAwiZSweurRdDSDDnW5hvLl4NF898q1gpWZn7jj/hFcAJBvBFETlhM7NeqThS6YKMI6QezKTw+gX6L3L8EimY+fhtaI7FQcSsrUt8LXg3riIqtbpsATJ3D+LUU3yPZKyrjXyRywd8j+MHQ2nXoZ7fHZq5Q3fOWWp5TWRKEojwEcEnX912lNeB3xxCQugkQ3dahAPsioYBGsb/sShE71ZFVNGdNsD8sLSkuzUBcdXKHw7Oqz6iauqTDWk7hv750hn2D3z9aIFgmw3lZ/XZsKqHlHq/SK334qR6+lXrv34mTmznF2syRHY5No17LT5IjjLMbnHuFE271x0sRXnUJ+ma9oUMeoJrMqIw42YwYh/4MNUcf0s6mauS9npHmZ5Q1UI3mdL7qqzISsdQLNylZdJ88j/b3+jWA0pADhtMugEY9roKYF/GHCUICiShNHv4MNr+12QvF3dtD8YJNq6RwJU=
 install:
-  - bash scripts/travis_install.sh
+- bash scripts/travis_install.sh
 script:
-  - bash scripts/travis_script.sh
+- bash scripts/travis_script.sh
 after_success:
-  - bash scripts/travis_after_success.sh
+- bash scripts/travis_after_success.sh
