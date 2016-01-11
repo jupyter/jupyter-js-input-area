@@ -6,7 +6,7 @@ jupyter-js-input-area
 
 An input area widget and model for the Jupyter notebook.
 
-[API Docs](http://jupyter.github.io/jupyter-js-input-area/api/)
+[API Docs](http://jupyter.github.io/jupyter-js-input-area/)
 
 
 Package Install
