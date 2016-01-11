@@ -12,7 +12,7 @@
     "phosphor-signaling": "^1.2.0",
     "phosphor-widget": "^1.0.0-rc.0",
     "phosphor-panel": "^1.0.0-rc.1",
-    "jupyter-js-editor": "file:../jupyter-js-editor"
+    "jupyter-js-editor": "^0.1.9"
   },
   "devDependencies": {
     "es6-module-loader": "^0.17.8",
