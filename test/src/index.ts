@@ -5,4 +5,9 @@
 import expect = require('expect.js');
 
 describe('jupyter-js-input-area', () => {
+
+  it('should pass', () => {
+
+  });
+
 });
