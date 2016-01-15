@@ -57,6 +57,18 @@ npm run test:ie
 ```
 
 
+Build Example
+-------------
+
+Follow the source build instructions first.
+
+```bash
+npm run build:example
+```
+
+Change to `example` directory and navigate to `index.html`.
+
+
 Build Docs
 ----------
 
@@ -78,6 +90,15 @@ Earlier versions may also work, but come with no guarantees.
 - IE 11+
 - Firefox 32+
 - Chrome 38+
+
+
+Bundle for the Browser
+----------------------
+
+Follow the package install instructions first.
+
+Any bundler that understands how to `require()` files with `.js` and `.css`
+extensions can be used with this package.
 
 
 Usage Examples
