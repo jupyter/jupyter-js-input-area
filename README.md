@@ -57,6 +57,18 @@ npm run test:ie
 ```
 
 
+Build Example
+-------------
+
+Follow the source build instructions first.
+
+```bash
+npm run build:example
+```
+
+Change to `example` directory and navigate to `index.html`.
+
+
 Build Docs
 ----------
 
