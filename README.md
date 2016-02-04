@@ -1,5 +1,7 @@
-jupyter-js-input-area
-=======================
+DEPRECATED: jupyter-js-input-area
+=================================
+
+This code has been merged into the [jupyter-js-notebook](https://github.com/jupyter/jupyter-js-notebook) repository, where it will continue to be developed.
 
 [![Build Status](https://travis-ci.org/jupyter/jupyter-js-input-area.svg)](https://travis-ci.org/jupyter/jupyter-js-input-area?branch=master)
 [![Coverage Status](https://coveralls.io/repos/jupyter/jupyter-js-input-area/badge.svg?branch=master&service=github)](https://coveralls.io/github/jupyter/jupyter-js-input-area?branch=master)
